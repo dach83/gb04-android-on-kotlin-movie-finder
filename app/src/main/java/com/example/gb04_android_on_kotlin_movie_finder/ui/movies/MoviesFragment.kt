@@ -7,8 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.gb04_android_on_kotlin_movie_finder.R
+import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMoviesBinding
 
 class MoviesFragment : Fragment() {
+
+    private var _binding: FragmentMoviesBinding? = null
+    private val binding: FragmentMoviesBinding get() = _binding!!
 
     companion object {
         fun newInstance() = MoviesFragment()
@@ -20,12 +24,18 @@ class MoviesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_movies, container, false)
+        _binding = FragmentMoviesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[MoviesViewModel::class.java]
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
