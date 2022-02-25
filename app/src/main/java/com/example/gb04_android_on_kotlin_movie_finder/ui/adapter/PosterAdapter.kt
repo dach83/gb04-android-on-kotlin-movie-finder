@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Movie
+import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 
-class MovieAdapter : ListAdapter<Movie, MovieAdapter.ViewHolder>(MovieDiff()) {
+class PosterAdapter : ListAdapter<Poster, PosterAdapter.ViewHolder>(PosterDiff()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poster, parent, false)
@@ -21,13 +22,13 @@ class MovieAdapter : ListAdapter<Movie, MovieAdapter.ViewHolder>(MovieDiff()) {
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        fun bind(movie: Movie) {
+        fun bind(poster: Poster) {
             // TODO
         }
     }
 }
 
-private class MovieDiff : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie) = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie) = oldItem == newItem
+private class PosterDiff : DiffUtil.ItemCallback<Poster>() {
+    override fun areItemsTheSame(oldItem: Poster, newItem: Poster) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Poster, newItem: Poster) = oldItem == newItem
 }

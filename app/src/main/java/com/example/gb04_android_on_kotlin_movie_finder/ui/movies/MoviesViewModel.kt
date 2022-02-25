@@ -11,15 +11,15 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.repository.Reposit
 class MoviesViewModel : ViewModel() {
 
     private val repository: Repository = RepositoryImpl()
-    private val _movies = mutableMapOf<Category, MutableLiveData<List<Movie>>>()
+    private val movies = mutableMapOf<Category, MutableLiveData<List<Movie>>>()
 
     init {
         for(category in Category.values()) {
-            _movies[category] = MutableLiveData<List<Movie>>()
-            _movies[category]?.value = repository.getMovies(category)
+            movies[category] = MutableLiveData<List<Movie>>()
+            movies[category]?.value = repository.getMovies(category)
         }
     }
 
-    fun getMoviesList(category: Category): LiveData<List<Movie>> = _movies[category]!!
+    fun getPosterList(category: Category): LiveData<List<Movie>> = movies[category]!!
 
 }

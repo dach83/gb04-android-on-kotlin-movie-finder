@@ -1,7 +1,7 @@
 package com.example.gb04_android_on_kotlin_movie_finder.domain.repository
 
-import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Movie
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
+import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Movie
 
 interface Repository {
 
