@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.R
-import com.example.gb04_android_on_kotlin_movie_finder.domain.movie.Movie
+import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Movie
 
 class MovieAdapter : ListAdapter<Movie, MovieAdapter.ViewHolder>(MovieDiff()) {
 
