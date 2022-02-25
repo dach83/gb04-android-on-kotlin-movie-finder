@@ -1,12 +1,11 @@
 package com.example.gb04_android_on_kotlin_movie_finder.ui.movies
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.gb04_android_on_kotlin_movie_finder.R
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMoviesBinding
 
 class MoviesFragment : Fragment() {
