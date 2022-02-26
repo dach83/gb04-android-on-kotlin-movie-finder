@@ -2,6 +2,7 @@ package com.example.gb04_android_on_kotlin_movie_finder.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
@@ -38,12 +39,12 @@ class CompilationsAdapter(
         fun bind(category: Category) {
             binding.titleTextView.text = category.title
             binding.seeAllTextView.setOnClickListener { controller.onClickSeeAll(category) }
-            controller.onBindPosterAdapter(category, adapter)
+            controller.onBindPosterAdapter(category, adapter, binding)
         }
     }
 
     interface Controller {
-        fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter)
+        fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter, binding: ItemCompilationBinding)
         fun onClickSeeAll(category: Category)
         fun onClickPoster(poster: Poster)
     }

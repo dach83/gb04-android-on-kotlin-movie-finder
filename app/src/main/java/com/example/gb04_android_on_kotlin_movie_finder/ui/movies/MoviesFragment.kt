@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMoviesBinding
+import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.movieCategories
@@ -40,6 +42,8 @@ class MoviesFragment : Fragment(), CompilationsAdapter.Controller {
 
         val movieCompilationAdapter = CompilationsAdapter(movieCategories, this)
         binding.movieCompilationRecyclerView.adapter = movieCompilationAdapter
+
+        viewModel.requestMovieCompilations()
     }
 
     override fun onDestroyView() {
@@ -47,10 +51,12 @@ class MoviesFragment : Fragment(), CompilationsAdapter.Controller {
         _binding = null
     }
 
-    override fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter) {
+    override fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter, binding: ItemCompilationBinding) {
         viewModel.movieCompilations[category]?.observe(viewLifecycleOwner) { movies ->
             val posters = movies.map { Poster(it.id) }
             posterAdapter.submitList(posters)
+            binding.loadingProgressBar.visibility = View.GONE
+            binding.posterRecyclerView.visibility = View.VISIBLE
         }
     }
 

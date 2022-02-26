@@ -6,19 +6,19 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:layout_margin="@dimen/default_margin"
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Upcoming" />
 
     <TextView
-        android:layout_margin="@dimen/default_margin"
         android:id="@+id/see_all_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
         android:text="@string/see_all_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,9 +28,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="invisible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/title_text_view"
         tools:itemCount="5"
         tools:listitem="@layout/item_poster" />
+
+    <ProgressBar
+        android:id="@+id/loading_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/poster_recycler_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/poster_recycler_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
