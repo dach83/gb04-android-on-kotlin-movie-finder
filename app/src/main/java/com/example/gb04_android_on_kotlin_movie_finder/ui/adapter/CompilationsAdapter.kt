@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
+import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 
-class CompilationAdapter(
+class CompilationsAdapter(
     private val categories: List<Category>,
-    val onChangePosterAdapter: (category: Category, adapter: PosterAdapter) -> Unit
-) : RecyclerView.Adapter<CompilationAdapter.ViewHolder>() {
+    private val controller: Controller
+) : RecyclerView.Adapter<CompilationsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -28,7 +29,7 @@ class CompilationAdapter(
     inner class ViewHolder(private val binding: ItemCompilationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private var adapter: PosterAdapter = PosterAdapter()
+        private var adapter: PosterAdapter = PosterAdapter(controller::onClickPoster)
 
         init {
             binding.posterRecyclerView.adapter = adapter
@@ -36,7 +37,14 @@ class CompilationAdapter(
 
         fun bind(category: Category) {
             binding.titleTextView.text = category.title
-            onChangePosterAdapter(category, adapter)
+            binding.seeAllTextView.setOnClickListener { controller.onClickSeeAll(category) }
+            controller.onBindPosterAdapter(category, adapter)
         }
+    }
+
+    interface Controller {
+        fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter)
+        fun onClickSeeAll(category: Category)
+        fun onClickPoster(poster: Poster)
     }
 }

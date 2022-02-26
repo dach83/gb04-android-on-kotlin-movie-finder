@@ -1,21 +1,20 @@
 package com.example.gb04_android_on_kotlin_movie_finder.ui.movies
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMoviesBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.movieCategories
-import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.CompilationAdapter
+import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.CompilationsAdapter
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.PosterAdapter
-import kotlin.math.log
 
-class MoviesFragment : Fragment() {
+class MoviesFragment : Fragment(), CompilationsAdapter.Controller {
 
     private var _binding: FragmentMoviesBinding? = null
     private val binding: FragmentMoviesBinding get() = _binding!!
@@ -38,18 +37,29 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this)[MoviesViewModel::class.java]
-        binding.movieCompilationRecyclerView.adapter =
-            CompilationAdapter(movieCategories) { category, adapter ->
-                viewModel.getPosterList(category).observe(viewLifecycleOwner) { movies ->
-                    val posterList = movies.map { Poster(it.id, it.title) }
-                    adapter.submitList(posterList)
-                }
-            }
+
+        val movieCompilationAdapter = CompilationsAdapter(movieCategories, this)
+        binding.movieCompilationRecyclerView.adapter = movieCompilationAdapter
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter) {
+        viewModel.movieCompilations[category]?.observe(viewLifecycleOwner) { movies ->
+            val posters = movies.map { Poster(it.id) }
+            posterAdapter.submitList(posters)
+        }
+    }
+
+    override fun onClickSeeAll(category: Category) {
+        Toast.makeText(context, "See all ${category.title} clicked", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onClickPoster(poster: Poster) {
+        Toast.makeText(context, "$poster clicked", Toast.LENGTH_SHORT).show()
     }
 
 }

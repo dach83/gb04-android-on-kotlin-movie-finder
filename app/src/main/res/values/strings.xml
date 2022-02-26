@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">gb04-android-on-kotlin-movie-finder</string>
+    <string name="see_all_label">See all</string>
 </resources>

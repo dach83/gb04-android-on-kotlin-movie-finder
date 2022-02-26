@@ -1,29 +1,30 @@
 package com.example.gb04_android_on_kotlin_movie_finder.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gb04_android_on_kotlin_movie_finder.R
-import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Movie
+import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemPosterBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 
-class PosterAdapter : ListAdapter<Poster, PosterAdapter.ViewHolder>(PosterDiff()) {
+class PosterAdapter(private val onClickPoster: (poster: Poster) -> Unit) :
+    ListAdapter<Poster, PosterAdapter.ViewHolder>(PosterDiff()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_poster, parent, false)
-        return ViewHolder(view)
+        val binding =
+            ItemPosterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(private val binding: ItemPosterBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(poster: Poster) {
-            // TODO
+            binding.posterImageView.setOnClickListener { onClickPoster(poster) }
         }
     }
 }
