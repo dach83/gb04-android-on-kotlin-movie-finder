@@ -2,11 +2,12 @@ package com.example.gb04_android_on_kotlin_movie_finder
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ActivityMainBinding
 import com.example.gb04_android_on_kotlin_movie_finder.ui.movie_card.MovieCardFragment
-import com.example.gb04_android_on_kotlin_movie_finder.ui.movies_screen.MoviesScreenFragment
+import com.example.gb04_android_on_kotlin_movie_finder.ui.movie_compilations.MovieCompilationsFragment
 
-class MainActivity : AppCompatActivity(), MoviesScreenFragment.Controller {
+class MainActivity : AppCompatActivity(), MovieCompilationsFragment.Controller {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity(), MoviesScreenFragment.Controller {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MoviesScreenFragment.newInstance())
+                .replace(R.id.container, MovieCompilationsFragment.newInstance())
                 .commit()
         }
     }

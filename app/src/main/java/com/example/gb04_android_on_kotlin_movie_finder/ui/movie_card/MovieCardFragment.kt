@@ -3,6 +3,7 @@ package com.example.gb04_android_on_kotlin_movie_finder.ui.movie_card
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -23,6 +24,7 @@ class MovieCardFragment : Fragment() {
     private var movieId: Int = UNDEFINED_ID
 
     companion object {
+        private const val TAG = "@@@"
         private const val UNDEFINED_ID = 0
         private const val MOVIE_ID_KEY = "movie_id"
 
@@ -62,6 +64,7 @@ class MovieCardFragment : Fragment() {
                 is ResponseState.Loading -> {}
             }
         }
+        viewModel.getMovie(movieId)
     }
 
     override fun onDestroyView() {
@@ -78,6 +81,6 @@ class MovieCardFragment : Fragment() {
     }
 
     private fun renderMovieCard(movie: Movie) {
-
+        binding.movieTitleTextView.text = movie.title
     }
 }

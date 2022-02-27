@@ -1,4 +1,4 @@
-package com.example.gb04_android_on_kotlin_movie_finder.ui.movies_screen
+package com.example.gb04_android_on_kotlin_movie_finder.ui.movie_compilations
 
 import android.accounts.NetworkErrorException
 import androidx.lifecycle.MutableLiveData
@@ -12,15 +12,19 @@ import java.lang.Thread.sleep
 import kotlin.concurrent.thread
 import kotlin.random.Random
 
-class MoviesScreenViewModel : ViewModel() {
+class MovieCompilationsViewModel : ViewModel() {
 
     private val repository: Repository = RepositoryImpl
 
-    private val _movieCompilations = mutableMapOf<Category, MutableLiveData<MovieCompilationResponseState>>()
+    private val _movieCompilations =
+        mutableMapOf<Category, MutableLiveData<MovieCompilationResponseState>>()
     val movieCompilations: Map<Category, MutableLiveData<MovieCompilationResponseState>>
         get() = _movieCompilations
 
-    private fun postMovieCompilationResponseState(category: Category, state: MovieCompilationResponseState) {
+    private fun postMovieCompilationResponseState(
+        category: Category,
+        state: MovieCompilationResponseState
+    ) {
         _movieCompilations.computeIfAbsent(category) { MutableLiveData<MovieCompilationResponseState>() }
             .postValue(state)
     }
@@ -34,19 +38,10 @@ class MoviesScreenViewModel : ViewModel() {
             sleep(2000)
 
             categories.forEach { category ->
-                if (Random.nextBoolean()) {
-                    postMovieCompilationResponseState(
-                        category,
-                        ResponseState.Success(repository.getMovies(category))
-                    )
-                } else {
-                    postMovieCompilationResponseState(
-                        category,
-                        ResponseState.Error(NetworkErrorException("Сompilation ${category.title} was not loaded"))
-                    )
-                }
+                val movies = repository.getMovies(category)
+                postMovieCompilationResponseState(category, ResponseState.Success(movies))
             }
         }
     }
-
 }
+

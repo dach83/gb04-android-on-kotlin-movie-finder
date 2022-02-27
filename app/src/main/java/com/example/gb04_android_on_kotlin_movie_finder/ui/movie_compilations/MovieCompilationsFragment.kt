@@ -1,4 +1,4 @@
-package com.example.gb04_android_on_kotlin_movie_finder.ui.movies_screen
+package com.example.gb04_android_on_kotlin_movie_finder.ui.movie_compilations
 
 import android.content.Context
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMoviesScreenBinding
+import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMovieCompilationsBinding
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.ResponseState
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
@@ -17,17 +17,17 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.movieCatego
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.CompilationsAdapter
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.PosterAdapter
 
-class MoviesScreenFragment : Fragment(), CompilationsAdapter.Controller {
+class MovieCompilationsFragment : Fragment(), CompilationsAdapter.Controller {
 
-    private lateinit var viewModel: MoviesScreenViewModel
+    private lateinit var viewModel: MovieCompilationsViewModel
 
-    private var _binding: FragmentMoviesScreenBinding? = null
-    private val binding: FragmentMoviesScreenBinding get() = _binding!!
+    private var _binding: FragmentMovieCompilationsBinding? = null
+    private val binding: FragmentMovieCompilationsBinding get() = _binding!!
 
     private lateinit var controller: Controller
 
     companion object {
-        fun newInstance() = MoviesScreenFragment()
+        fun newInstance() = MovieCompilationsFragment()
     }
 
     override fun onAttach(context: Context) {
@@ -43,14 +43,14 @@ class MoviesScreenFragment : Fragment(), CompilationsAdapter.Controller {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMoviesScreenBinding.inflate(inflater, container, false)
+        _binding = FragmentMovieCompilationsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[MoviesScreenViewModel::class.java]
+        viewModel = ViewModelProvider(this)[MovieCompilationsViewModel::class.java]
 
         val movieCompilationAdapter = CompilationsAdapter(movieCategories, this)
         binding.movieCompilationRecyclerView.adapter = movieCompilationAdapter
