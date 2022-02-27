@@ -8,4 +8,5 @@ sealed class ResponseState<out T> {
     data class Success<T>(val data: T) : ResponseState<T>()
 }
 
-typealias MoviesResponseState = ResponseState<List<Movie>>
+typealias MovieResponseState = ResponseState<Movie>
+typealias MovieCompilationResponseState = ResponseState<List<Movie>>
