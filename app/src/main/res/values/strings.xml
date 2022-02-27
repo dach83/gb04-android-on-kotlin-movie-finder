@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">gb04-android-on-kotlin-movie-finder</string>
     <string name="see_all_label">See all</string>
+    <string name="loading_error">Сan\'t load data</string>
+    <string name="try_again">Try again</string>
+    <string name="try_again_label">Try again</string>
 </resources>

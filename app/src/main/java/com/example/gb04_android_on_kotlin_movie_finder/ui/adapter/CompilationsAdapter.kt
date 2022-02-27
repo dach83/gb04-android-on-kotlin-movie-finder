@@ -9,7 +9,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 
 class CompilationsAdapter(
-    private val categories: List<Category>,
+    private val categories: Array<Category>,
     private val controller: Controller
 ) : RecyclerView.Adapter<CompilationsAdapter.ViewHolder>() {
 
@@ -39,6 +39,7 @@ class CompilationsAdapter(
         fun bind(category: Category) {
             binding.titleTextView.text = category.title
             binding.seeAllTextView.setOnClickListener { controller.onClickSeeAll(category) }
+            binding.tryAgainTextView.setOnClickListener { controller.onClickTryAgain(category) }
             controller.onBindPosterAdapter(category, adapter, binding)
         }
     }
@@ -46,6 +47,7 @@ class CompilationsAdapter(
     interface Controller {
         fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter, binding: ItemCompilationBinding)
         fun onClickSeeAll(category: Category)
+        fun onClickTryAgain(category: Category)
         fun onClickPoster(poster: Poster)
     }
 }

@@ -7,7 +7,7 @@ enum class Category(val title: String) {
     TOP_RATED("Top rated"),
 }
 
-val movieCategories = listOf<Category>(
+val movieCategories = arrayOf<Category>(
     Category.UPCOMING,
     Category.NOW_PLAYING,
     Category.POPULAR,
