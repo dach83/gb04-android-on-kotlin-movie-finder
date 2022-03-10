@@ -2,7 +2,6 @@ package com.example.gb04_android_on_kotlin_movie_finder.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
@@ -23,9 +22,8 @@ class CompilationsAdapter(
         holder.bind(categories[position])
     }
 
-    override fun getItemCount(): Int {
-        return categories.size
-    }
+    override fun getItemCount(): Int = categories.size
+
 
     inner class ViewHolder(private val binding: ItemCompilationBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -33,19 +31,26 @@ class CompilationsAdapter(
         private var adapter: PosterAdapter = PosterAdapter(controller::onClickPoster)
 
         init {
-            binding.posterRecyclerView.adapter = adapter
+            binding.posterRecyclerView.adapter = this.adapter
         }
 
         fun bind(category: Category) {
-            binding.titleTextView.text = category.title
-            binding.seeAllTextView.setOnClickListener { controller.onClickSeeAll(category) }
-            binding.tryAgainTextView.setOnClickListener { controller.onClickTryAgain(category) }
+            binding.apply {
+                titleTextView.text = category.title
+                seeAllTextView.setOnClickListener { controller.onClickSeeAll(category) }
+                tryAgainTextView.setOnClickListener { controller.onClickTryAgain(category) }
+            }
             controller.onBindPosterAdapter(category, adapter, binding)
         }
     }
 
     interface Controller {
-        fun onBindPosterAdapter(category: Category, posterAdapter: PosterAdapter, binding: ItemCompilationBinding)
+        fun onBindPosterAdapter(
+            category: Category,
+            posterAdapter: PosterAdapter,
+            binding: ItemCompilationBinding
+        )
+
         fun onClickSeeAll(category: Category)
         fun onClickTryAgain(category: Category)
         fun onClickPoster(poster: Poster)

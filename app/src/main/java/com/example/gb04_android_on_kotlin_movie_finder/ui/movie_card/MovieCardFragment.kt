@@ -1,22 +1,21 @@
 package com.example.gb04_android_on_kotlin_movie_finder.ui.movie_card
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMovieCardBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.ResponseState
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Movie
-import java.lang.Error
-import java.lang.RuntimeException
 
 class MovieCardFragment : Fragment() {
 
-    private lateinit var viewModel: MovieCardViewModel
+    private val viewModel: MovieCardViewModel by lazy {
+        ViewModelProvider(this)[MovieCardViewModel::class.java]
+    }
 
     private var _binding: FragmentMovieCardBinding? = null
     private val binding: FragmentMovieCardBinding get() = _binding!!
@@ -24,7 +23,6 @@ class MovieCardFragment : Fragment() {
     private var movieId: Int = UNDEFINED_ID
 
     companion object {
-        private const val TAG = "@@@"
         private const val UNDEFINED_ID = 0
         private const val MOVIE_ID_KEY = "movie_id"
 
@@ -52,7 +50,6 @@ class MovieCardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[MovieCardViewModel::class.java]
         viewModel.movieCard.observe(viewLifecycleOwner) { responseState ->
             when (responseState) {
                 is ResponseState.Success -> {
