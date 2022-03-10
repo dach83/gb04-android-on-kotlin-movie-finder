@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentMovieCompilationsBinding
@@ -14,12 +15,15 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.ResponseState
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.movieCategories
+import com.example.gb04_android_on_kotlin_movie_finder.domain.showSnackBar
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.CompilationsAdapter
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.PosterAdapter
 
 class MovieCompilationsFragment : Fragment(), CompilationsAdapter.Controller {
 
-    private lateinit var viewModel: MovieCompilationsViewModel
+    private val viewModel: MovieCompilationsViewModel by lazy {
+        ViewModelProvider(this)[MovieCompilationsViewModel::class.java]
+    }
 
     private var _binding: FragmentMovieCompilationsBinding? = null
     private val binding: FragmentMovieCompilationsBinding get() = _binding!!
@@ -50,8 +54,6 @@ class MovieCompilationsFragment : Fragment(), CompilationsAdapter.Controller {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[MovieCompilationsViewModel::class.java]
-
         val movieCompilationAdapter = CompilationsAdapter(movieCategories, this)
         binding.movieCompilationRecyclerView.adapter = movieCompilationAdapter
 
@@ -70,28 +72,29 @@ class MovieCompilationsFragment : Fragment(), CompilationsAdapter.Controller {
     ) {
         viewModel.movieCompilations[category]?.observe(viewLifecycleOwner) { responseState ->
             when (responseState) {
-                is ResponseState.Success -> {
+                is ResponseState.Success -> with(binding) {
                     val posters = responseState.data.map { Poster(it.id) }
                     posterAdapter.submitList(posters)
-                    binding.loadingProgressBar.visibility = View.GONE
-                    binding.tryAgainTextView.visibility = View.GONE
-                    binding.seeAllTextView.visibility = View.VISIBLE
+                    loadingProgressBar.isVisible = false
+                    tryAgainTextView.isVisible = false
+                    seeAllTextView.isVisible = true
                 }
-                is ResponseState.Loading -> {
-                    binding.tryAgainTextView.visibility = View.GONE
-                    binding.loadingProgressBar.visibility = View.VISIBLE
-                    binding.seeAllTextView.visibility = View.INVISIBLE
+                is ResponseState.Loading -> with(binding) {
+                    tryAgainTextView.isVisible = false
+                    loadingProgressBar.isVisible = true
+                    seeAllTextView.isVisible = false
                 }
-                is ResponseState.Error -> {
-                    binding.loadingProgressBar.visibility = View.GONE
-                    binding.tryAgainTextView.visibility = View.VISIBLE
+                is ResponseState.Error -> with(binding) {
+                    loadingProgressBar.visibility = View.GONE
+                    tryAgainTextView.visibility = View.VISIBLE
                 }
             }
         }
     }
 
     override fun onClickSeeAll(category: Category) {
-        Toast.makeText(context, "See all ${category.title} clicked", Toast.LENGTH_SHORT).show()
+        binding.root.showSnackBar("See all ${category.title} clicked")
+//        Toast.makeText(context, "See all ${category.title} clicked", Toast.LENGTH_SHORT).show()
     }
 
     override fun onClickTryAgain(category: Category) {

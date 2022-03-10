@@ -14,13 +14,7 @@ object RepositoryImpl : Repository {
         Movie(5, "Forest Gump")
     )
 
-    override fun getMovies(category: Category): List<Movie> {
-        return movies.toList()
-    }
+    override fun getMovies(category: Category): List<Movie> = movies.toList()
 
-    override fun getMovie(movieId: Int): Movie? {
-        return movies.firstOrNull { it.id == movieId }
-    }
-
-
+    override fun getMovie(movieId: Int): Movie? = movies.firstOrNull { it.id == movieId }
 }
