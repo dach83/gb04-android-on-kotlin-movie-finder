@@ -15,6 +15,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.ResponseState
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Category
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.entity.movieCategories
+import com.example.gb04_android_on_kotlin_movie_finder.domain.showSnackBar
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.CompilationsAdapter
 import com.example.gb04_android_on_kotlin_movie_finder.ui.adapter.PosterAdapter
 
@@ -92,7 +93,8 @@ class MovieCompilationsFragment : Fragment(), CompilationsAdapter.Controller {
     }
 
     override fun onClickSeeAll(category: Category) {
-        Toast.makeText(context, "See all ${category.title} clicked", Toast.LENGTH_SHORT).show()
+        binding.root.showSnackBar("See all ${category.title} clicked")
+//        Toast.makeText(context, "See all ${category.title} clicked", Toast.LENGTH_SHORT).show()
     }
 
     override fun onClickTryAgain(category: Category) {
