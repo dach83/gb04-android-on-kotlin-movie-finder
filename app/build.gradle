@@ -27,6 +27,13 @@ android {
         viewBinding true
     }
 
+    buildTypes.each {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def apiKey = properties.getProperty("movie_db_api_key", "")
+        it.buildConfigField "String", "MOVIE_DB_API_KEY", apiKey
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
