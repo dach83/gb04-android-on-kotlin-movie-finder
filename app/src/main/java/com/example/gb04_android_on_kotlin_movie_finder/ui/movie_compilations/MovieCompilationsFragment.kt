@@ -73,7 +73,7 @@ class MovieCompilationsFragment : Fragment(), CompilationsAdapter.Controller {
         viewModel.movieCompilations[category]?.observe(viewLifecycleOwner) { responseState ->
             when (responseState) {
                 is ResponseState.Success -> with(binding) {
-                    val posters = responseState.data.map { Poster(it.id) }
+                    val posters = responseState.data.map { Poster(it.id, it.title) }
                     posterAdapter.submitList(posters)
                     loadingProgressBar.isVisible = false
                     tryAgainTextView.isVisible = false
