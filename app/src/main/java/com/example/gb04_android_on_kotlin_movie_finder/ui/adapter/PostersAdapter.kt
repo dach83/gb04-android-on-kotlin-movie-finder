@@ -24,6 +24,7 @@ class PosterAdapter(private val onClickPoster: (poster: Poster) -> Unit) :
     inner class ViewHolder(private val binding: ItemPosterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(poster: Poster) {
+            binding.titleTextView.text = poster.title
             binding.posterImageView.setOnClickListener { onClickPoster(poster) }
         }
     }
