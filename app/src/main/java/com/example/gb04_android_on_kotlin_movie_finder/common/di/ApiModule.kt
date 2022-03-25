@@ -1,4 +1,4 @@
-package com.example.gb04_android_on_kotlin_movie_finder.common.data.di
+package com.example.gb04_android_on_kotlin_movie_finder.common.di
 
 import com.example.gb04_android_on_kotlin_movie_finder.common.data.api.MovieApi
 import com.example.gb04_android_on_kotlin_movie_finder.common.data.api.interceptors.ApiKeyInterceptor
