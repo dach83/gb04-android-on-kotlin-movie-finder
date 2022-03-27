@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gb04androidonkotlinmoviefinder">
         <activity
-            android:name=".common.presentation.MainActivity"
+            android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
