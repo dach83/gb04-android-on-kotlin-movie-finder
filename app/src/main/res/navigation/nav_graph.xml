@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/movies_fragment">
+
+
+    <fragment
+        android:id="@+id/movies_fragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment"
+        android:label="CompilationFragment">
+        <action
+            android:id="@+id/action_compilationFragment_to_seeAllActivity"
+            app:destination="@id/seeAllActivity" />
+        <argument
+            android:name="show_mode"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment$ShowMode"
+            android:defaultValue="MOVIES" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvshows_fragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment"
+        android:label="CompilationFragment">
+        <action
+            android:id="@+id/action_compilationFragment_to_seeAllActivity"
+            app:destination="@id/seeAllActivity" />
+        <argument
+            android:name="show_mode"
+            android:defaultValue="TVSHOWS"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment$ShowMode" />
+    </fragment>
+    <activity
+        android:id="@+id/seeAllActivity"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.seeall.SeeAllActivity"
+        android:label="SeeAllActivity">
+        <argument
+            android:name="compilation"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation" />
+    </activity>
+</navigation>

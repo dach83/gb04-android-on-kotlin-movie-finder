@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
@@ -22,18 +24,14 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAdapter.Controller {
 
+    private val args by navArgs<CompilationFragmentArgs>()
+
     private var _binding: FragmentCompilationBinding? = null
     private val binding: FragmentCompilationBinding get() = _binding!!
 
     private val viewModel: CompilationViewModel by viewModels()
 
-    private lateinit var showMode: ShowMode
     private lateinit var compilations: List<Compilation>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        parseArguments()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,12 +57,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         binding.swipeRefreshLayout.setOnRefreshListener(viewModel::requestRefresh)
     }
 
-    private fun parseArguments() {
-        showMode = requireArguments().getSerializable(MODE_KEY) as ShowMode
-    }
-
     private fun setupCompilations() {
-        compilations = when (showMode) {
+        compilations = when (args.showMode) {
             ShowMode.MOVIES -> moviesCompilation
             ShowMode.TVSHOWS -> tvShowsCompilation
         }
@@ -105,29 +99,17 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     }
 
     override fun onClickSeeAll(compilation: Compilation) {
-        Toast.makeText(context, compilation.title, Toast.LENGTH_SHORT).show() // TODO
+        val action = CompilationFragmentDirections.actionCompilationFragmentToSeeAllActivity(compilation)
+        findNavController().navigate(action)
     }
 
     override fun onClickPoster(poster: Poster) {
         Toast.makeText(context, poster.title, Toast.LENGTH_SHORT).show() // TODO
     }
 
-    private enum class ShowMode {
+    enum class ShowMode {
         MOVIES,
         TVSHOWS
     }
 
-    companion object {
-
-        private const val MODE_KEY = "mode"
-
-        private fun getInstance(showMode: ShowMode) = CompilationFragment().apply {
-            arguments = Bundle().apply {
-                putSerializable(MODE_KEY, showMode)
-            }
-        }
-
-        fun moviesFragment() = getInstance(ShowMode.MOVIES)
-        fun tvShowsFragment() = getInstance(ShowMode.TVSHOWS)
-    }
 }

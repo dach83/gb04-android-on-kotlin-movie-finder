@@ -2,11 +2,10 @@ package com.example.gb04_android_on_kotlin_movie_finder.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.gb04_android_on_kotlin_movie_finder.R
-import com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ActivityMainBinding
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
-import com.example.gb04_android_on_kotlin_movie_finder.presentation.seeall.SeeAllFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,12 +18,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, CompilationFragment.moviesFragment())
-                .commit()
-        }
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNav.setupWithNavController(navController)
     }
 
 }

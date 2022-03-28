@@ -12,7 +12,7 @@
     <string name="top_rated_label">Top Rated</string>
     <string name="airing_today_label">Airing Today</string>
     <string name="currently_airing_label">Currently Airing</string>
-    <string name="movies_menu_label">MOVIES</string>
-    <string name="tvshows_menu_label">TVSHOWS</string>
+    <string name="movies_label">MOVIES</string>
+    <string name="tvshows_label">TVSHOWS</string>
     <string name="celebs_menu_label">CELEBS</string>
 </resources>
