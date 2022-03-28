@@ -1,4 +1,4 @@
-package com.example.gb04_android_on_kotlin_movie_finder.presentation.movie
+package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,25 +45,30 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requestCompilations()
+        setupCompilations()
         setupCompilationAdapter()
+        setupSwipeRefresh()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupSwipeRefresh() {
+        binding.swipeRefreshLayout.setOnRefreshListener(viewModel::requestRefresh)
     }
 
     private fun parseArguments() {
         showMode = requireArguments().getSerializable(MODE_KEY) as ShowMode
     }
 
-    private fun requestCompilations() {
+    private fun setupCompilations() {
         compilations = when (showMode) {
             ShowMode.MOVIES -> moviesCompilation
             ShowMode.TVSHOWS -> tvShowsCompilation
         }
         compilations.forEach(viewModel::requestCompilation)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun setupCompilationAdapter() {
@@ -77,27 +82,37 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     ) {
         val adapter = PosterAdapter(this)
         recyclerView.adapter = adapter
-        observePosterCompilation(compilation, adapter)
+        observeCompilation(compilation, adapter)
+        observeRefresh(adapter)
     }
 
-    private fun observePosterCompilation(
+    private fun observeCompilation(
         compilation: Compilation,
         posterAdapter: PosterAdapter
     ) {
         lifecycleScope.launch {
-            viewModel.compilations[compilation]?.collectLatest(posterAdapter::submitData)
+            viewModel.compilations[compilation]?.collectLatest {
+                posterAdapter.submitData(it)
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
+    }
+
+    private fun observeRefresh(adapter: PosterAdapter) {
+        viewModel.refresh.observe(viewLifecycleOwner) {
+            adapter.refresh()
         }
     }
 
     override fun onClickSeeAll(compilation: Compilation) {
-        Toast.makeText(context, compilation.title, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, compilation.title, Toast.LENGTH_SHORT).show() // TODO
     }
 
     override fun onClickPoster(poster: Poster) {
-        Toast.makeText(context, poster.title, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, poster.title, Toast.LENGTH_SHORT).show() // TODO
     }
 
-    enum class ShowMode {
+    private enum class ShowMode {
         MOVIES,
         TVSHOWS
     }

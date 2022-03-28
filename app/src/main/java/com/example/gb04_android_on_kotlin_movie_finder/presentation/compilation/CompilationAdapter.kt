@@ -1,4 +1,4 @@
-package com.example.gb04_android_on_kotlin_movie_finder.presentation.movie
+package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,5 +1,7 @@
-package com.example.gb04_android_on_kotlin_movie_finder.presentation.movie
+package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -17,9 +19,16 @@ class CompilationViewModel @Inject constructor(private val repository: Repositor
     private var _compilations: MutableMap<Compilation, Flow<PagingData<Poster>>> = mutableMapOf()
     val compilations: Map<Compilation, Flow<PagingData<Poster>>> get() = _compilations
 
+    private val _refresh = MutableLiveData<Unit>()
+    val refresh: LiveData<Unit> get() = _refresh
+
     fun requestCompilation(compilation: Compilation) {
         _compilations[compilation] =
             repository.requestCompilation(compilation).cachedIn(viewModelScope)
+    }
+
+    fun requestRefresh() {
+        _refresh.value = Unit
     }
 
 }

@@ -36,7 +36,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/poster_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/compilation_height"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/compilation_row_height"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/title_text_view"
