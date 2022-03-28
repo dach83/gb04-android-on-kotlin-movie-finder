@@ -55,7 +55,7 @@ class PosterAdapter(private val controller: Controller) :
 class PosterDiffCallback : DiffUtil.ItemCallback<Poster>() {
 
     override fun areItemsTheSame(oldItem: Poster, newItem: Poster): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.posterPath == newItem.posterPath
     }
 
     override fun areContentsTheSame(oldItem: Poster, newItem: Poster): Boolean {

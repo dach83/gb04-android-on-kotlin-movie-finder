@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.movie.MovieCompilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
 
-class MovieCompilationAdapter(private val controller: Controller) :
-    RecyclerView.Adapter<MovieCompilationAdapter.ViewHolder>() {
+class CompilationAdapter(
+    private val compilations: List<Compilation>,
+    private val controller: Controller
+) :
+    RecyclerView.Adapter<CompilationAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -16,17 +19,17 @@ class MovieCompilationAdapter(private val controller: Controller) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(MovieCompilation.values()[position])
+        holder.bind(compilations[position])
     }
 
     override fun getItemCount(): Int {
-        return MovieCompilation.values().size
+        return compilations.size
     }
 
     inner class ViewHolder(private val binding: ItemCompilationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(compilation: MovieCompilation) {
+        fun bind(compilation: Compilation) {
             binding.apply {
                 titleTextView.setText(compilation.title)
                 controller.setupPosterAdapter(compilation, posterRecyclerView)
@@ -36,8 +39,8 @@ class MovieCompilationAdapter(private val controller: Controller) :
     }
 
     interface Controller {
-        fun setupPosterAdapter(compilation: MovieCompilation, recyclerView: RecyclerView)
-        fun onClickSeeAll(compilation: MovieCompilation)
+        fun setupPosterAdapter(compilation: Compilation, recyclerView: RecyclerView)
+        fun onClickSeeAll(compilation: Compilation)
     }
 
 }

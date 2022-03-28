@@ -25,7 +25,7 @@ class PosterLoadStateAdapter(private val tryAgainAction: TryAgainAction): LoadSt
     class Holder(binding: ItemPosterBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(loadState: LoadState) {
-            TODO("Not yet implemented")
+            //TODO("Not yet implemented")
         }
     }
 }

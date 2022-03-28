@@ -76,5 +76,9 @@ dependencies {
 
     // coil
     implementation "io.coil-kt:coil:2.0.0-rc02"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.10"
+
+    // kotlin reflect
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.10"
 
 }
