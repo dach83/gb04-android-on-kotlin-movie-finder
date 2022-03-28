@@ -32,11 +32,11 @@ class PosterAdapter(private val controller: Controller) :
             val posterPath = poster?.posterPath.orEmpty()
             binding.apply {
                 if (posterPath.isEmpty()) {
-                    posterImageView.setImageResource(R.drawable.ic_poster_blank)
+                    posterImageView.setImageResource(R.drawable.ic_movie)
                 } else {
                     posterImageView.load(POSTER_BASE_URL + posterPath) {
                         crossfade(true)
-                        placeholder(R.drawable.ic_poster_blank)
+                        placeholder(R.drawable.ic_movie)
                     }
                 }
 

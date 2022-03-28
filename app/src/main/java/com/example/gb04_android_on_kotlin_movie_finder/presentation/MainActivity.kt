@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, SeeAllFragment(Compilation.MoviesCompilation.PopularMovies))
+                .replace(R.id.container, CompilationFragment.moviesFragment())
                 .commit()
         }
     }

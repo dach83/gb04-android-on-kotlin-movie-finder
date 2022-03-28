@@ -11,6 +11,6 @@
         android:id="@+id/poster_image_view"
         android:layout_width="@dimen/poster_width"
         android:layout_height="@dimen/poster_height"
-        android:src="@drawable/ic_poster_blank" />
+        android:src="@drawable/ic_movie" />
 
 </androidx.cardview.widget.CardView>
