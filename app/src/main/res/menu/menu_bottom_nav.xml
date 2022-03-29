@@ -9,12 +9,12 @@
         android:title="@string/movies_label"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/celebs"
-        android:icon="@drawable/ic_celeb"
-        android:enabled="true"
-        android:title="@string/celebs_menu_label"
-        app:showAsAction="ifRoom" />
+<!--    <item-->
+<!--        android:id="@+id/celebs_fragment"-->
+<!--        android:icon="@drawable/ic_celeb"-->
+<!--        android:enabled="true"-->
+<!--        android:title="@string/celebs_menu_label"-->
+<!--        app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/tvshows_fragment"

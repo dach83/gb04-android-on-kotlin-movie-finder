@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

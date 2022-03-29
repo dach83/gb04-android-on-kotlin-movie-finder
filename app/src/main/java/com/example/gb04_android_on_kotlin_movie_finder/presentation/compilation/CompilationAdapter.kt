@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 
 class CompilationAdapter(
     private val compilations: List<Compilation>,

@@ -13,9 +13,9 @@
             android:id="@+id/action_compilationFragment_to_seeAllActivity"
             app:destination="@id/seeAllActivity" />
         <argument
-            android:name="show_mode"
-            app:argType="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment$ShowMode"
-            android:defaultValue="MOVIES" />
+            android:name="content_type"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType"
+            android:defaultValue="MOVIE" />
     </fragment>
     <fragment
         android:id="@+id/tvshows_fragment"
@@ -25,9 +25,9 @@
             android:id="@+id/action_compilationFragment_to_seeAllActivity"
             app:destination="@id/seeAllActivity" />
         <argument
-            android:name="show_mode"
-            android:defaultValue="TVSHOWS"
-            app:argType="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment$ShowMode" />
+            android:name="content_type"
+            android:defaultValue="TVSHOW"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType" />
     </fragment>
     <activity
         android:id="@+id/seeAllActivity"
@@ -35,6 +35,6 @@
         android:label="SeeAllActivity">
         <argument
             android:name="compilation"
-            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation" />
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation" />
     </activity>
 </navigation>

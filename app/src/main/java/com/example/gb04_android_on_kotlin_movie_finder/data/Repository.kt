@@ -3,24 +3,22 @@ package com.example.gb04_android_on_kotlin_movie_finder.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.MovieDbApi
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiConstants
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiService
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiMoviePaginationMapper
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiMoviePosterMapper
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiTvShowPaginationMapper
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiTvShowPosterMapper
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation.MoviesCompilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation.MoviesCompilation.*
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation.TvShowsCompilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation.TvShowsCompilation.*
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PaginatedPoster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class Repository @Inject constructor(
-    private val movieDbApi: MovieDbApi,
+    private val apiService: ApiService,
     private val apiMoviePosterMapper: ApiMoviePosterMapper,
     private val apiMoviePaginationMapper: ApiMoviePaginationMapper,
     private val apiTvShowPosterMapper: ApiTvShowPosterMapper,
@@ -28,9 +26,9 @@ class Repository @Inject constructor(
 ) : IRepository {
 
     override fun requestCompilation(compilation: Compilation): Flow<PagingData<Poster>> {
-        val loader = when (compilation) {
-            is MoviesCompilation -> paginatedMoviePosterLoader(compilation)
-            is TvShowsCompilation -> paginatedTvShowPosterLoader(compilation)
+        val loader = when (compilation.contentType) {
+            ContentType.MOVIE -> paginatedMoviePosterLoader(compilation)
+            ContentType.TVSHOW -> paginatedTvShowPosterLoader(compilation)
         }
         return Pager(
             config = PagingConfig(
@@ -43,14 +41,10 @@ class Repository @Inject constructor(
         ).flow
     }
 
-    private fun paginatedMoviePosterLoader(compilation: MoviesCompilation): PaginatedPosterLoader {
+    private fun paginatedMoviePosterLoader(compilation: Compilation): PaginatedPosterLoader {
         return { page ->
-            val apiMovieList = when (compilation) {
-                NowPlayingMovies -> movieDbApi.getNowPlayingMovies(page)
-                PopularMovies -> movieDbApi.getPopularMovies(page)
-                TopRatedMovies -> movieDbApi.getTopRatedMovies(page)
-                UpcomingMovies -> movieDbApi.getUpcomingMovies(page)
-            }
+            val path = ApiConstants.compilationPath(compilation)
+            val apiMovieList = apiService.getMovieList(path, page)
             val posters = apiMovieList.results.map {
                 apiMoviePosterMapper.mapToDomain(it)
             }
@@ -61,14 +55,10 @@ class Repository @Inject constructor(
         }
     }
 
-    private fun paginatedTvShowPosterLoader(compilation: TvShowsCompilation): PaginatedPosterLoader {
+    private fun paginatedTvShowPosterLoader(compilation: Compilation): PaginatedPosterLoader {
         return { page ->
-            val apiTvShowList = when (compilation) {
-                AiringTodayTvShows -> movieDbApi.getAiringTodayTvShows(page)
-                CurrentlyAiringTvShows -> movieDbApi.getCurrentlyAiringTvShows(page)
-                PopularTvShows -> movieDbApi.getPopularTvShows(page)
-                TopRatedTvShows -> movieDbApi.getTopRatedTvShows(page)
-            }
+            val path = ApiConstants.compilationPath(compilation)
+            val apiTvShowList = apiService.getTvShowList(path, page)
             val posters = apiTvShowList.results.map {
                 apiTvShowPosterMapper.mapToDomain(it)
             }

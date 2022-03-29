@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemPosterBinding
-import com.example.gb04_android_on_kotlin_movie_finder.domain.POSTER_BASE_URL
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 
 class PosterAdapter(private val controller: Controller) :
@@ -22,28 +21,25 @@ class PosterAdapter(private val controller: Controller) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val poster = getItem(position)
-        holder.bind(poster)
+        if (poster != null) {
+            holder.bind(poster)
+        } else {
+            holder.placeholder()
+        }
     }
 
     inner class ViewHolder(private val binding: ItemPosterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(poster: Poster?) {
-            val posterPath = poster?.posterPath.orEmpty()
-            binding.apply {
-                if (posterPath.isEmpty()) {
-                    posterImageView.setImageResource(R.drawable.ic_movie)
-                } else {
-                    posterImageView.load(POSTER_BASE_URL + posterPath) {
-                        crossfade(true)
-                        placeholder(R.drawable.ic_movie)
-                    }
-                }
-
-                if (poster != null) {
-                    root.setOnClickListener { controller.onClickPoster(poster) }
-                }
+        fun bind(poster: Poster) {
+            binding.posterImageView.load(poster.posterUrl) {
+                crossfade(true)
+                placeholder(R.drawable.ic_movie)
             }
+        }
+
+        fun placeholder() {
+            binding.posterImageView.setImageResource(R.drawable.ic_movie)
         }
     }
 
@@ -55,7 +51,7 @@ class PosterAdapter(private val controller: Controller) :
 class PosterDiffCallback : DiffUtil.ItemCallback<Poster>() {
 
     override fun areItemsTheSame(oldItem: Poster, newItem: Poster): Boolean {
-        return oldItem.posterPath == newItem.posterPath
+        return oldItem.posterUrl == newItem.posterUrl
     }
 
     override fun areContentsTheSame(oldItem: Poster, newItem: Poster): Boolean {

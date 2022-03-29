@@ -6,6 +6,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ActivitySeeAllBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterAdapter
@@ -43,7 +45,9 @@ class SeeAllActivity : AppCompatActivity(), PosterAdapter.Controller {
     }
 
     private fun setupPosterAdapter() {
+        val columns = resources.getInteger(R.integer.recycler_columns)
         val adapter = PosterAdapter(this)
+        binding.seeAllRecyclerView.layoutManager = GridLayoutManager(this, columns)
         binding.seeAllRecyclerView.adapter = adapter
         observeCompilation(adapter)
         observeRefresh(adapter)

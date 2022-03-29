@@ -12,14 +12,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.Compilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.moviesCompilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.compilation.tvShowsCompilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.movieCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.tvShowCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAdapter.Controller {
@@ -58,9 +58,9 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     }
 
     private fun setupCompilations() {
-        compilations = when (args.showMode) {
-            ShowMode.MOVIES -> moviesCompilation
-            ShowMode.TVSHOWS -> tvShowsCompilation
+        compilations = when (args.contentType) {
+            ContentType.MOVIE -> movieCompilations
+            ContentType.TVSHOW -> tvShowCompilations
         }
         compilations.forEach(viewModel::requestCompilation)
     }
@@ -84,7 +84,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         compilation: Compilation,
         posterAdapter: PosterAdapter
     ) {
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenStarted {
             viewModel.compilations[compilation]?.collectLatest {
                 posterAdapter.submitData(it)
                 binding.swipeRefreshLayout.isRefreshing = false
@@ -105,11 +105,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
 
     override fun onClickPoster(poster: Poster) {
         Toast.makeText(context, poster.title, Toast.LENGTH_SHORT).show() // TODO
-    }
-
-    enum class ShowMode {
-        MOVIES,
-        TVSHOWS
     }
 
 }

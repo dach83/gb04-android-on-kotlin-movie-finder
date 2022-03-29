@@ -1,8 +1,8 @@
 package com.example.gb04_android_on_kotlin_movie_finder.di
 
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.MovieDbApi
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiConstants
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiService
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.interceptor.ApiKeyInterceptor
-import com.example.gb04_android_on_kotlin_movie_finder.domain.API_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,13 +19,13 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideMovieApi(okHttpClient: OkHttpClient): MovieDbApi {
+    fun provideApiService(okHttpClient: OkHttpClient): ApiService {
         return Retrofit.Builder()
-            .baseUrl(API_BASE_URL)
+            .baseUrl(ApiConstants.SERVICE_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(MovieDbApi::class.java)
+            .create(ApiService::class.java)
     }
 
     @Provides
