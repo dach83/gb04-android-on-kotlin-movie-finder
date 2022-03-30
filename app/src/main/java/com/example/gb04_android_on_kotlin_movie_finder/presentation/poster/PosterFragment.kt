@@ -69,9 +69,9 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
 
     private fun observePosterFlow(adapter: PosterAdapter) {
         lifecycleScope.launchWhenStarted {
-            viewModel.requestPosterFlow(args.compilation).collectLatest {
+            viewModel.requestPosterData(args.compilation).collectLatest {
                 adapter.submitData(it)
-                viewModel.posterFlowReceived()
+                viewModel.posterDataReceived()
             }
         }
     }

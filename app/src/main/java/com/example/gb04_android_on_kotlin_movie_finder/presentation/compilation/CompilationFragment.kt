@@ -1,6 +1,7 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,8 +89,9 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         adapter: PosterAdapter
     ) {
         lifecycleScope.launchWhenStarted {
-            viewModel.requestCompilationFlow(compilation).collectLatest {
-                viewModel.compilationFlowReceived()
+            viewModel.requestCompilationData(compilation).collectLatest {
+                Log.d("@@@", "compilationFlowReceived")
+                viewModel.compilationDataReceived()
                 adapter.submitData(it)
             }
         }
@@ -109,6 +111,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
             .map { it.isInitialLoading }
             .distinctUntilChanged()
             .observe(viewLifecycleOwner) { isInitialLoading ->
+                // TODO ("При выклеченном интернете ProgressBar не появляется, т.к. отрабатывает observePosterFlow")
+                Log.d("@@@", "isInitialLoading: $isInitialLoading")
                 binding.initialLoadProgressBar.isVisible = isInitialLoading
             }
     }

@@ -20,12 +20,12 @@ class CompilationViewModel @Inject constructor(private val repository: Repositor
     private val _uiState = MutableStateFlow(CompilationViewState())
     val uiState = _uiState.asLiveData()
 
-    fun requestCompilationFlow(compilation: Compilation): Flow<PagingData<Poster>> =
+    fun requestCompilationData(compilation: Compilation): Flow<PagingData<Poster>> =
         compilationFlow.computeIfAbsent(compilation) {
             repository.requestCompilation(it).cachedIn(viewModelScope)
         }
 
-    fun compilationFlowReceived() = _uiState.update { currentState ->
+    fun compilationDataReceived() = _uiState.update { currentState ->
         currentState.copy(isInitialLoading = false, isRefreshing = false)
     }
 

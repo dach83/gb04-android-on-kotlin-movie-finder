@@ -22,18 +22,19 @@ class PosterViewModel @Inject constructor(private val repository: IRepository) :
     private val _uiState = MutableStateFlow(PosterViewState())
     val uiState = _uiState.asLiveData()
 
-    fun requestPosterFlow(compilation: Compilation): Flow<PagingData<Poster>> {
+    fun requestPosterData(compilation: Compilation): Flow<PagingData<Poster>> {
         if (posterFlow == null) {
             posterFlow = repository.requestCompilation(compilation).cachedIn(viewModelScope)
         }
         return posterFlow as Flow<PagingData<Poster>>
     }
 
+    fun posterDataReceived() = _uiState.update { currentState ->
+        currentState.copy(isRefreshing = false)
+    }
+
     fun refreshUi() = _uiState.update { currentState ->
         currentState.copy(isRefreshing = true)
     }
 
-    fun posterFlowReceived() = _uiState.update { currentState ->
-        currentState.copy(isRefreshing = false)
-    }
 }
