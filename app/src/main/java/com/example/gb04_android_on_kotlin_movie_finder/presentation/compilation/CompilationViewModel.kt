@@ -27,7 +27,7 @@ class CompilationViewModel @Inject constructor(private val repository: Repositor
             repository.requestCompilation(compilation).cachedIn(viewModelScope)
     }
 
-    fun requestRefresh() {
+    fun refreshCompilations() {
         _refresh.value = Unit
     }
 

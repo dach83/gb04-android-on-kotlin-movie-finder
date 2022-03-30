@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.gb04_android_on_kotlin_movie_finder">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -11,17 +11,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Gb04androidonkotlinmoviefinder">
+        android:theme="@style/Theme.MovieFinder">
         <activity
             android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.seeall.SeeAllActivity"/>
     </application>
 
 </manifest>

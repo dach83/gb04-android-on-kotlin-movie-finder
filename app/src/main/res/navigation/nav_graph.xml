@@ -10,8 +10,8 @@
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment"
         android:label="CompilationFragment">
         <action
-            android:id="@+id/action_compilationFragment_to_seeAllActivity"
-            app:destination="@id/seeAllActivity" />
+            android:id="@+id/action_compilationFragment_to_posterFragment"
+            app:destination="@id/posterFragment" />
         <argument
             android:name="content_type"
             app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType"
@@ -22,19 +22,19 @@
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment"
         android:label="CompilationFragment">
         <action
-            android:id="@+id/action_compilationFragment_to_seeAllActivity"
-            app:destination="@id/seeAllActivity" />
+            android:id="@+id/action_compilationFragment_to_posterFragment"
+            app:destination="@id/posterFragment" />
         <argument
             android:name="content_type"
             android:defaultValue="TVSHOW"
             app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType" />
     </fragment>
-    <activity
-        android:id="@+id/seeAllActivity"
-        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.seeall.SeeAllActivity"
-        android:label="SeeAllActivity">
+    <fragment
+        android:id="@+id/posterFragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterFragment"
+        android:label="PosterFragment" >
         <argument
             android:name="compilation"
             app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation" />
-    </activity>
+    </fragment>
 </navigation>

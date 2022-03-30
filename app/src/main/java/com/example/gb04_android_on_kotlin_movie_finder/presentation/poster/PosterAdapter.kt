@@ -11,7 +11,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemPosterBin
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 
 class PosterAdapter(private val controller: Controller) :
-    PagingDataAdapter<Poster, PosterAdapter.ViewHolder>(PosterDiffCallback()) {
+    PagingDataAdapter<Poster, PosterAdapter.ViewHolder>(POSTER_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -31,15 +31,17 @@ class PosterAdapter(private val controller: Controller) :
     inner class ViewHolder(private val binding: ItemPosterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(poster: Poster) {
-            binding.posterImageView.load(poster.posterUrl) {
+        fun bind(poster: Poster) = binding.apply {
+            posterImageView.load(poster.posterUrl) {
                 crossfade(true)
                 placeholder(R.drawable.ic_movie)
             }
+            root.setOnClickListener { controller.onClickPoster(poster) }
         }
 
-        fun placeholder() {
-            binding.posterImageView.setImageResource(R.drawable.ic_movie)
+        fun placeholder() = binding.apply {
+            posterImageView.setImageResource(R.drawable.ic_movie)
+            root.setOnClickListener(null)
         }
     }
 
@@ -48,7 +50,7 @@ class PosterAdapter(private val controller: Controller) :
     }
 }
 
-class PosterDiffCallback : DiffUtil.ItemCallback<Poster>() {
+private object POSTER_COMPARATOR : DiffUtil.ItemCallback<Poster>() {
 
     override fun areItemsTheSame(oldItem: Poster, newItem: Poster): Boolean {
         return oldItem.posterUrl == newItem.posterUrl

@@ -2,6 +2,7 @@ package com.example.gb04_android_on_kotlin_movie_finder.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.gb04_android_on_kotlin_movie_finder.R
@@ -26,6 +27,10 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomNav.isVisible = destination.id != R.id.posterFragment
+        }
     }
 
 }

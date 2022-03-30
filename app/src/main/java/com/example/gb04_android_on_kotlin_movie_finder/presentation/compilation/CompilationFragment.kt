@@ -54,7 +54,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     }
 
     private fun setupSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener(viewModel::requestRefresh)
+        binding.swipeRefreshLayout.setOnRefreshListener(viewModel::refreshCompilations)
     }
 
     private fun setupCompilations() {
@@ -99,7 +99,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     }
 
     override fun onClickSeeAll(compilation: Compilation) {
-        val action = CompilationFragmentDirections.actionCompilationFragmentToSeeAllActivity(compilation)
+        val action = CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(compilation)
         findNavController().navigate(action)
     }
 
