@@ -17,16 +17,16 @@ import javax.inject.Inject
 @HiltViewModel
 class PosterViewModel @Inject constructor(private val repository: IRepository) : ViewModel() {
 
-    private var posterPagingFlow: Flow<PagingData<Poster>>? = null
+    private var posterFlow: Flow<PagingData<Poster>>? = null
 
     private val _uiState = MutableStateFlow(PosterViewState())
     val uiState = _uiState.asLiveData()
 
-    fun requestPosters(compilation: Compilation): Flow<PagingData<Poster>> {
-        if (posterPagingFlow == null) {
-            posterPagingFlow = repository.requestCompilation(compilation).cachedIn(viewModelScope)
+    fun requestPosterFlow(compilation: Compilation): Flow<PagingData<Poster>> {
+        if (posterFlow == null) {
+            posterFlow = repository.requestCompilation(compilation).cachedIn(viewModelScope)
         }
-        return posterPagingFlow as Flow<PagingData<Poster>>
+        return posterFlow as Flow<PagingData<Poster>>
     }
 
     fun refreshUi() = _uiState.update { currentState ->

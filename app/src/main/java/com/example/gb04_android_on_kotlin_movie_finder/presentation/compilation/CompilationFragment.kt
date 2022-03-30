@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -31,8 +33,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
 
     private val viewModel: CompilationViewModel by viewModels()
 
-    private lateinit var compilations: List<Compilation>
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,9 +43,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupCompilations()
-        setupCompilationAdapter()
         setupSwipeRefresh()
+        setupCompilationAdapter()
     }
 
     override fun onDestroyView() {
@@ -54,18 +53,20 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     }
 
     private fun setupSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener(viewModel::refreshCompilations)
-    }
-
-    private fun setupCompilations() {
-        compilations = when (args.contentType) {
-            ContentType.MOVIE -> movieCompilations
-            ContentType.TVSHOW -> tvShowCompilations
-        }
-        compilations.forEach(viewModel::requestCompilation)
+        binding.swipeRefreshLayout.setOnRefreshListener(viewModel::refreshUi)
+        viewModel.uiState
+            .map { it.isRefreshing }
+            .distinctUntilChanged()
+            .observe(viewLifecycleOwner) {
+                binding.swipeRefreshLayout.isRefreshing = it
+            }
     }
 
     private fun setupCompilationAdapter() {
+        val compilations = when (args.contentType) {
+            ContentType.MOVIE -> movieCompilations
+            ContentType.TVSHOW -> tvShowCompilations
+        }
         val adapter = CompilationAdapter(compilations, this)
         binding.compilationRecyclerView.adapter = adapter
     }
@@ -76,30 +77,34 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     ) {
         val adapter = PosterAdapter(this)
         recyclerView.adapter = adapter
-        observeCompilation(compilation, adapter)
-        observeRefresh(adapter)
+        observePosterFlow(compilation, adapter)
+        observeRefreshUi(adapter)
     }
 
-    private fun observeCompilation(
+    private fun observePosterFlow(
         compilation: Compilation,
-        posterAdapter: PosterAdapter
+        adapter: PosterAdapter
     ) {
         lifecycleScope.launchWhenStarted {
-            viewModel.compilations[compilation]?.collectLatest {
-                posterAdapter.submitData(it)
-                binding.swipeRefreshLayout.isRefreshing = false
+            viewModel.requestCompilationFlow(compilation).collectLatest {
+                adapter.submitData(it)
+                viewModel.uiRefreshed()
             }
         }
     }
 
-    private fun observeRefresh(adapter: PosterAdapter) {
-        viewModel.refresh.observe(viewLifecycleOwner) {
-            adapter.refresh()
+    private fun observeRefreshUi(adapter: PosterAdapter) = viewModel.uiState
+        .map { it.isRefreshing }
+        .distinctUntilChanged()
+        .observe(viewLifecycleOwner) { isRefreshing ->
+            if (isRefreshing) {
+                adapter.refresh()
+            }
         }
-    }
 
     override fun onClickSeeAll(compilation: Compilation) {
-        val action = CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(compilation)
+        val action =
+            CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(compilation)
         findNavController().navigate(action)
     }
 

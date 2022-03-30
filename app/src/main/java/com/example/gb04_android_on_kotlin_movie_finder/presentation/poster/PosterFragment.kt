@@ -64,24 +64,25 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         binding.seeAllRecyclerView.layoutManager = GridLayoutManager(context, columns)
         binding.seeAllRecyclerView.adapter = adapter
         observePosterFlow(adapter)
-        observeRefresh(adapter)
+        observeRefreshUi(adapter)
     }
 
     private fun observePosterFlow(adapter: PosterAdapter) {
         lifecycleScope.launchWhenStarted {
-            viewModel.requestPosters(args.compilation).collectLatest {
+            viewModel.requestPosterFlow(args.compilation).collectLatest {
                 adapter.submitData(it)
                 viewModel.uiRefreshed()
             }
         }
     }
 
-    private fun observeRefresh(adapter: PosterAdapter) = viewModel.uiState
+    private fun observeRefreshUi(adapter: PosterAdapter) = viewModel.uiState
         .map { it.isRefreshing }
         .distinctUntilChanged()
         .observe(viewLifecycleOwner) { isRefreshing ->
-            if (isRefreshing)
+            if (isRefreshing) {
                 adapter.refresh()
+            }
         }
 
     override fun onClickPoster(poster: Poster) {
