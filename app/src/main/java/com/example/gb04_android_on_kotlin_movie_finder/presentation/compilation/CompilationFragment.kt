@@ -124,7 +124,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     }
 
     override fun onClickPoster(poster: Poster) {
-        Toast.makeText(context, poster.title, Toast.LENGTH_SHORT).show() // TODO
+        val action = CompilationFragmentDirections.actionMoviesFragmentToDetailsFragment(poster.id, poster.contentType)
+        findNavController().navigate(action)
     }
 
 }

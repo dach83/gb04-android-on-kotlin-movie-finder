@@ -1,9 +1,11 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.example.gb04_android_on_kotlin_movie_finder.data.Repository
+import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class CompilationViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class CompilationViewModel @Inject constructor(private val repository: IRepository) : ViewModel() {
 
     private val compilationFlow: MutableMap<Compilation, Flow<PagingData<Poster>>> = mutableMapOf()
 

@@ -14,9 +14,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class ApiTvShowList (
-	@SerializedName("page") val page : Int,
-	@SerializedName("results") val results : List<ApiTvShowListItem>,
-	@SerializedName("total_results") val totalResults : Int,
-	@SerializedName("total_pages") val totalPages : Int
+data class ApiTvShowList(
+    @SerializedName("page") val page: Int,
+    @SerializedName("results") val results: List<ApiTvShowListItem>,
+    @SerializedName("total_pages") val totalPages: Int,
+//    @SerializedName("total_results") val totalResults: Int
 )

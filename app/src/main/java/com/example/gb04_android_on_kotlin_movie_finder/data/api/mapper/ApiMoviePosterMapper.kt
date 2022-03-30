@@ -11,8 +11,8 @@ class ApiMoviePosterMapper @Inject constructor() : ApiMapper<ApiMovieListItem, P
         return Poster(
             apiEntity.id,
             ContentType.MOVIE,
-            ApiConstants.fullPosterUrl(apiEntity.posterPath),
-            apiEntity.title
+            ApiConstants.imageUrl(apiEntity.posterPath),
+            apiEntity.title.orEmpty()
         )
     }
 }

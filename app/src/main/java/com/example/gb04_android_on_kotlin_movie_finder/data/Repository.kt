@@ -5,10 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiConstants
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiService
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiMoviePaginationMapper
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiMoviePosterMapper
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiTvShowPaginationMapper
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiTvShowPosterMapper
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.*
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
@@ -19,11 +16,18 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val apiService: ApiService,
+    private val apiMovieDetailsMapper: ApiMovieDetailsMapper,
+    private val apiTvShowDetailsMapper: ApiTvShowDetailsMapper,
     private val apiMoviePosterMapper: ApiMoviePosterMapper,
     private val apiMoviePaginationMapper: ApiMoviePaginationMapper,
     private val apiTvShowPosterMapper: ApiTvShowPosterMapper,
     private val apiTvShowPaginationMapper: ApiTvShowPaginationMapper
 ) : IRepository {
+
+    override suspend fun requestDetails(id: Int, contentType: ContentType) = when (contentType) {
+        ContentType.MOVIE -> apiMovieDetailsMapper.mapToDomain(apiService.getMovieDetails(id))
+        ContentType.TVSHOW -> apiTvShowDetailsMapper.mapToDomain(apiService.getTvShowDetails(id))
+    }
 
     override fun requestCompilation(compilation: Compilation): Flow<PagingData<Poster>> {
         val loader = when (compilation.contentType) {

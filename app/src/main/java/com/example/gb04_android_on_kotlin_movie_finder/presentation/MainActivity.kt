@@ -29,7 +29,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNav.isVisible = destination.id != R.id.posterFragment
+            when (destination.id) {
+                R.id.movies_fragment,
+                R.id.tvshows_fragment -> binding.bottomNav.isVisible = true
+                else -> binding.bottomNav.isVisible = false
+            }
         }
     }
 

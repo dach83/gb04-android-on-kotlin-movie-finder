@@ -11,8 +11,8 @@ class ApiTvShowPosterMapper @Inject constructor() : ApiMapper<ApiTvShowListItem,
         return Poster(
             apiEntity.id,
             ContentType.TVSHOW,
-            ApiConstants.fullPosterUrl(apiEntity.posterPath),
-            apiEntity.name
+            ApiConstants.imageUrl(apiEntity.posterPath),
+            apiEntity.name.orEmpty()
         )
     }
 }

@@ -5,7 +5,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 object ApiConstants {
 
     const val SERVICE_BASE_URL = "https://api.themoviedb.org/3/"
-    private const val POSTER_BASE_URL = "https://image.tmdb.org/t/p/w500"
+    private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
     fun compilationPath(compilation: Compilation) = when (compilation) {
         Compilation.UPCOMING_MOVIES -> "upcoming"
@@ -18,7 +18,7 @@ object ApiConstants {
         Compilation.TOP_RATED_TVSHOWS -> "top_rated"
     }
 
-    fun fullPosterUrl(pathPoster: String?): String =
-        if (pathPoster.isNullOrEmpty()) "" else POSTER_BASE_URL + pathPoster
+    fun imageUrl(path: String?): String =
+        if (path.isNullOrEmpty()) "" else IMAGE_BASE_URL + path
 
 }

@@ -10,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentPosterBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -86,6 +88,7 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         }
 
     override fun onClickPoster(poster: Poster) {
-        Toast.makeText(context, poster.title, Toast.LENGTH_SHORT).show() // TODO
+        val action = PosterFragmentDirections.actionPosterFragmentToDetailsFragment(poster.id, poster.contentType)
+        findNavController().navigate(action)
     }
 }
