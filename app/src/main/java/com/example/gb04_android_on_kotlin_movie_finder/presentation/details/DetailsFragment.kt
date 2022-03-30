@@ -51,6 +51,8 @@ class DetailsFragment : Fragment() {
             binding.apply {
                 loadingProgressBar.isVisible = uiState.isLoading
                 uiState.details?.let { details ->
+                    toolbar.title = details.title
+                    toolbar.subtitle = details.tagline
                     titleTextView.text = details.title
                     taglineTextView.text = details.tagline
                     overviewTextView.text = details.overview
