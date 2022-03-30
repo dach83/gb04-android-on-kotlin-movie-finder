@@ -25,12 +25,12 @@ class CompilationViewModel @Inject constructor(private val repository: Repositor
             repository.requestCompilation(it).cachedIn(viewModelScope)
         }
 
-    fun refreshUi() = _uiState.update { currentState ->
-        currentState.copy(isRefreshing = true)
+    fun compilationFlowReceived() = _uiState.update { currentState ->
+        currentState.copy(isInitialLoading = false, isRefreshing = false)
     }
 
-    fun uiRefreshed() = _uiState.update { currentState ->
-        currentState.copy(isInitialLoading = false, isRefreshing = false)
+    fun refreshUi() = _uiState.update { currentState ->
+        currentState.copy(isRefreshing = true)
     }
 
 }

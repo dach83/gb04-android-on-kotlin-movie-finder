@@ -33,7 +33,7 @@ class PosterViewModel @Inject constructor(private val repository: IRepository) :
         currentState.copy(isRefreshing = true)
     }
 
-    fun uiRefreshed() = _uiState.update { currentState ->
+    fun posterFlowReceived() = _uiState.update { currentState ->
         currentState.copy(isRefreshing = false)
     }
 }

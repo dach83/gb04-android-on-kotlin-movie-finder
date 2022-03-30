@@ -71,7 +71,7 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         lifecycleScope.launchWhenStarted {
             viewModel.requestPosterFlow(args.compilation).collectLatest {
                 adapter.submitData(it)
-                viewModel.uiRefreshed()
+                viewModel.posterFlowReceived()
             }
         }
     }

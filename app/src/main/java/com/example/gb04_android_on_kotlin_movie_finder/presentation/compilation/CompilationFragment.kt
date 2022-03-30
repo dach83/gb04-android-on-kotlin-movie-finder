@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
@@ -45,6 +46,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         super.onViewCreated(view, savedInstanceState)
         setupSwipeRefresh()
         setupCompilationAdapter()
+        observeInitialLoad()
     }
 
     override fun onDestroyView() {
@@ -87,8 +89,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     ) {
         lifecycleScope.launchWhenStarted {
             viewModel.requestCompilationFlow(compilation).collectLatest {
+                viewModel.compilationFlowReceived()
                 adapter.submitData(it)
-                viewModel.uiRefreshed()
             }
         }
     }
@@ -101,6 +103,15 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
                 adapter.refresh()
             }
         }
+
+    private fun observeInitialLoad() {
+        viewModel.uiState
+            .map { it.isInitialLoading }
+            .distinctUntilChanged()
+            .observe(viewLifecycleOwner) { isInitialLoading ->
+                binding.initialLoadProgressBar.isVisible = isInitialLoading
+            }
+    }
 
     override fun onClickSeeAll(compilation: Compilation) {
         val action =
