@@ -1,11 +1,11 @@
 package com.example.gb04_android_on_kotlin_movie_finder.data.api
 
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.image.ImageSize
 
 object ApiConstants {
 
     const val SERVICE_BASE_URL = "https://api.themoviedb.org/3/"
-    private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
     fun compilationPath(compilation: Compilation) = when (compilation) {
         Compilation.UPCOMING_MOVIES -> "upcoming"
@@ -17,8 +17,5 @@ object ApiConstants {
         Compilation.POPULAR_TVSHOWS -> "popular"
         Compilation.TOP_RATED_TVSHOWS -> "top_rated"
     }
-
-    fun imageUrl(path: String?): String =
-        if (path.isNullOrEmpty()) "" else IMAGE_BASE_URL + path
 
 }

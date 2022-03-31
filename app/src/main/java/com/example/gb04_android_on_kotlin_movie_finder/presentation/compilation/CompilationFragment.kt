@@ -82,6 +82,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         recyclerView.adapter = adapter
         observePosterFlow(compilation, adapter)
         observeRefreshUi(adapter)
+        // TODO(Не сохраняется позиция в списках при повороте экрана)
     }
 
     private fun observePosterFlow(

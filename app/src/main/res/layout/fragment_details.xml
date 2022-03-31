@@ -52,9 +52,9 @@
                     android:layout_marginStart="@dimen/text_margin"
                     android:textColor="@color/black"
                     android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/poster_layout"
                     app:layout_constraintTop_toTopOf="@id/poster_layout"
-                    app:layout_constraintEnd_toEndOf="parent"
                     tools:text="The Contractor" />
 
                 <TextView
@@ -62,9 +62,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="@id/title_text_view"
                     app:layout_constraintStart_toStartOf="@id/title_text_view"
                     app:layout_constraintTop_toBottomOf="@id/title_text_view"
-                    app:layout_constraintEnd_toEndOf="@id/title_text_view"
                     tools:text="The mission is not what it seems." />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

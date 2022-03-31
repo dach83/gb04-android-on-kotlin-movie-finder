@@ -4,6 +4,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiConstants
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.model.tvshow.ApiTvShowListItem
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.image.Image
 import javax.inject.Inject
 
 class ApiTvShowPosterMapper @Inject constructor() : ApiMapper<ApiTvShowListItem, Poster> {
@@ -11,8 +12,8 @@ class ApiTvShowPosterMapper @Inject constructor() : ApiMapper<ApiTvShowListItem,
         return Poster(
             apiEntity.id,
             ContentType.TVSHOW,
-            ApiConstants.imageUrl(apiEntity.posterPath),
-            apiEntity.name.orEmpty()
+            apiEntity.name.orEmpty(),
+            Image(apiEntity.posterPath.orEmpty())
         )
     }
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentDetailsBinding
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.image.ImageSize
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,7 +27,7 @@ class DetailsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -56,8 +57,8 @@ class DetailsFragment : Fragment() {
                     titleTextView.text = details.title
                     taglineTextView.text = details.tagline
                     overviewTextView.text = details.overview
-                    backdropImageView.load(details.backdropUrl)
-                    posterLayout.posterImageView.load(details.posterUrl)
+                    backdropImageView.load(details.backdropImage.url(ImageSize.ORIGINAL))
+                    posterLayout.posterImageView.load(details.posterImage.url())
                 }
             }
         }
