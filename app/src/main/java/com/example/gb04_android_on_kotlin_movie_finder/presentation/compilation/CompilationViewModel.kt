@@ -7,7 +7,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Settings
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.presentation.applySettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,10 +24,16 @@ class CompilationViewModel @Inject constructor(private val repository: IReposito
     private val _uiState = MutableStateFlow(CompilationViewState())
     val uiState = _uiState.asLiveData()
 
-    fun requestCompilationData(compilation: Compilation): Flow<PagingData<Poster>> =
-        compilationFlow.computeIfAbsent(compilation) {
-            repository.requestCompilation(it).cachedIn(viewModelScope)
+    fun requestCompilationData(
+        compilation: Compilation,
+    ): Flow<PagingData<Poster>> {
+        if (compilationFlow[compilation] == null) {
+            compilationFlow[compilation] =
+                repository.requestCompilation(compilation).cachedIn(viewModelScope)
         }
+        return (compilationFlow[compilation] as Flow<PagingData<Poster>>)
+            .applySettings(repository.loadSettings())
+    }
 
     fun compilationDataReceived() = _uiState.update { currentState ->
         currentState.copy(isInitialLoading = false, isRefreshing = false)

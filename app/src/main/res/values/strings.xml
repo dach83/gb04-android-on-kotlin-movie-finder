@@ -102,4 +102,18 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="filter_header">Filter</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="adult_enabled">Enable adult content</string>
+    <string name="settings_label">Settings</string>
+    <string name="info">INFO</string>
+    <string name="user_review">USER REVIEW</string>
+    <string name="user_review_hint">Leave a review…</string>
 </resources>

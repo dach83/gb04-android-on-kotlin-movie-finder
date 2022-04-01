@@ -59,4 +59,8 @@
             android:name="content_type"
             app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType" />
     </fragment>
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.setting.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

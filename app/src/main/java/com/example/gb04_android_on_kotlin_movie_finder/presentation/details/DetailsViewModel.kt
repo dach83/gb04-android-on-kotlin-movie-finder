@@ -24,4 +24,7 @@ class DetailsViewModel @Inject constructor(private val repository: IRepository) 
         }
     }
 
+    fun saveUserReview(text: String) {
+
+    }
 }

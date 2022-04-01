@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import coil.load
+import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentDetailsBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.image.ImageSize
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,11 +38,31 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         requestDetails()
         observeDetails()
+        setupTabLayout()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupTabLayout() {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) = when (tab.position) {
+                0 -> binding.overviewTextView.isVisible = true
+                1 -> binding.userReviewEditText.isVisible = true
+                else -> throw IllegalArgumentException("Unknown Tab")
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) = when (tab.position) {
+                0 -> binding.overviewTextView.isVisible = false
+                1 -> binding.userReviewEditText.isVisible = false
+                else -> throw IllegalArgumentException("Unknown Tab")
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+        })
     }
 
     private fun requestDetails() {
@@ -57,8 +79,13 @@ class DetailsFragment : Fragment() {
                     titleTextView.text = details.title
                     taglineTextView.text = details.tagline
                     overviewTextView.text = details.overview
-                    backdropImageView.load(details.backdropImage.url(ImageSize.ORIGINAL))
-                    posterLayout.posterImageView.load(details.posterImage.url())
+                    posterLayout.posterImageView.load(details.posterImage.url()) {
+                        crossfade(true)
+                        placeholder(R.drawable.ic_poster_placeholder)
+                    }
+                    backdropImageView.load(details.backdropImage.url(ImageSize.LARGE)) {
+                        crossfade(true)
+                    }
                 }
             }
         }

@@ -16,14 +16,6 @@ class PosterAdapter(private val controller: Controller) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemPosterBinding.inflate(inflater, parent, false)
-
-        // set image aspect ratio
-        val posterWidth = parent.resources.getDimension(R.dimen.poster_width)
-        val posterHeight = parent.resources.getDimension(R.dimen.poster_height)
-        with(binding.posterImageView.layoutParams) {
-            height = (width * posterHeight / posterWidth).toInt()
-        }
-
         return ViewHolder(binding)
     }
 
@@ -69,7 +61,7 @@ class PosterAdapter(private val controller: Controller) :
 private val POSTER_COMPARATOR = object : DiffUtil.ItemCallback<Poster>() {
 
     override fun areItemsTheSame(oldItem: Poster, newItem: Poster): Boolean {
-        return (oldItem.id == newItem.id) && (oldItem.contentType == newItem.contentType)
+        return (oldItem.contentId == newItem.contentId) && (oldItem.contentType == newItem.contentType)
     }
 
     override fun areContentsTheSame(oldItem: Poster, newItem: Poster): Boolean {

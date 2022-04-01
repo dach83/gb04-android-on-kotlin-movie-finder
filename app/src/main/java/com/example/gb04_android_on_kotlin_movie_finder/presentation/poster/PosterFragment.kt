@@ -1,10 +1,10 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.poster
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentPosterBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
-import com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -72,8 +71,8 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
     private fun observePosterFlow(adapter: PosterAdapter) {
         lifecycleScope.launchWhenStarted {
             viewModel.requestPosterData(args.compilation).collectLatest {
-                adapter.submitData(it)
                 viewModel.posterDataReceived()
+                adapter.submitData(it)
             }
         }
     }
@@ -88,7 +87,7 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         }
 
     override fun onClickPoster(poster: Poster) {
-        val action = PosterFragmentDirections.actionPosterFragmentToDetailsFragment(poster.id, poster.contentType)
+        val action = PosterFragmentDirections.actionPosterFragmentToDetailsFragment(poster.contentId, poster.contentType)
         findNavController().navigate(action)
     }
 }
