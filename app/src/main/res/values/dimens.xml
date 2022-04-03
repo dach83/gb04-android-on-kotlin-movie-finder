@@ -5,4 +5,7 @@
     <integer name="recycler_columns">3</integer>
     <dimen name="default_margin">8dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_size">20sp</dimen>
+    <dimen name="default_elevation">10dp</dimen>
+    <dimen name="details_appbar_height">350dp</dimen>
 </resources>

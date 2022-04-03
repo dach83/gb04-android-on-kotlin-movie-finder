@@ -1,9 +1,6 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
-import android.app.Application
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,15 +10,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gb04_android_on_kotlin_movie_finder.App
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.*
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.movieCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.tvShowCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -54,7 +54,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         super.onViewCreated(view, savedInstanceState)
         setupSwipeRefresh()
         setupCompilationAdapter()
-        observeInitialLoad()
+        observeUiState()
     }
 
     override fun onDestroyView() {
@@ -80,6 +80,14 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         val adapter = CompilationAdapter(compilations, this)
         binding.compilationRecyclerView.adapter = adapter
     }
+
+    private fun observeUiState() =
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            binding.apply {
+                initialLoadProgressBar.isVisible = uiState.isLoading
+                swipeRefreshLayout.isRefreshing = uiState.isRefreshing
+            }
+        }
 
     override fun setupPosterAdapter(
         compilation: Compilation,
@@ -113,19 +121,11 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
             }
         }
 
-    private fun observeInitialLoad() {
-        viewModel.uiState
-            .map { it.isInitialLoading }
-            .distinctUntilChanged()
-            .observe(viewLifecycleOwner) { isInitialLoading ->
-                // TODO ("При выключенном интернете ProgressBar не появляется")
-                binding.initialLoadProgressBar.isVisible = isInitialLoading
-            }
-    }
-
     override fun onClickSeeAll(compilation: Compilation) {
         val action =
-            CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(compilation)
+            CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(
+                PosterFilter.CompilationFilter(compilation)
+            )
         findNavController().navigate(action)
     }
 

@@ -17,7 +17,8 @@ class TvShowDetailsMapper @Inject constructor() {
         apiEntity.overview.orEmpty(),
         Image(apiEntity.posterPath.orEmpty()),
         Image(apiEntity.backdropPath.orEmpty()),
-        dbEntity?.userReview.orEmpty()
+        dbEntity?.userReview.orEmpty(),
+        dbEntity?.favourites ?: false,
     )
 
 }

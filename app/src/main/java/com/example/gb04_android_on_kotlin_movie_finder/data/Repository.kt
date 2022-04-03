@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.preference.PreferenceManager
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiConstants
@@ -26,6 +27,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poste
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -80,15 +82,19 @@ class Repository @Inject constructor(
         ).flow
     }
 
-    override fun loadSettings(): Settings {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(app)
-        return Settings(
-            enabledAdult = prefs.getBoolean(app.getString(R.string.adult_enabled), false)
-        )
-    }
+    override fun requestFavorites(): Flow<PagingData<Poster>> = Pager(
+        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+        pagingSourceFactory = { detailsDao.favoritesPagingSource() }
+    )
+        .flow
+        .map { pagingData ->
+            pagingData.map { dbDetails ->
+                requestDetails(dbDetails.contentId, dbDetails.contentType).toPoster()
+            }
+        }
 
-    private fun paginatedMoviePosterLoader(compilation: Compilation): PaginatedPosterLoader {
-        return { page ->
+    private fun paginatedMoviePosterLoader(compilation: Compilation): PaginatedPosterLoader =
+        { page ->
             val path = ApiConstants.compilationPath(compilation)
             val apiMovieList = apiService.getMovieList(path, page)
             val posters = apiMovieList.results.map {
@@ -99,10 +105,9 @@ class Repository @Inject constructor(
             )
             PaginatedPoster(posters, pagination)
         }
-    }
 
-    private fun paginatedTvShowPosterLoader(compilation: Compilation): PaginatedPosterLoader {
-        return { page ->
+    private fun paginatedTvShowPosterLoader(compilation: Compilation): PaginatedPosterLoader =
+        { page ->
             val path = ApiConstants.compilationPath(compilation)
             val apiTvShowList = apiService.getTvShowList(path, page)
             val posters = apiTvShowList.results.map {
@@ -113,5 +118,11 @@ class Repository @Inject constructor(
             )
             PaginatedPoster(posters, pagination)
         }
+
+    override fun loadSettings(): Settings {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(app)
+        return Settings(
+            enabledAdult = prefs.getBoolean(app.getString(R.string.adult_enabled), false)
+        )
     }
 }

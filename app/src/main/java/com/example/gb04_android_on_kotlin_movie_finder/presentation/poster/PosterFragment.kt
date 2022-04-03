@@ -1,10 +1,10 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.poster
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
@@ -16,13 +16,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentPosterBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class PosterFragment : Fragment(), PosterAdapter.Controller {
 
     private val args by navArgs<PosterFragmentArgs>()
+
+    private lateinit var filter: PosterFilter
 
     private var _binding: FragmentPosterBinding? = null
     private val binding: FragmentPosterBinding get() = _binding!!
@@ -40,8 +44,17 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupFilter()
         setupPosterAdapter()
-        setupSwipeRefresh()
+        observeUiState()
+    }
+
+    private fun setupFilter() {
+        filter = try {
+            args.filter
+        } catch (e: Exception) {
+            PosterFilter.FavoritesFilter // default filter
+        }
     }
 
     override fun onDestroyView() {
@@ -49,28 +62,27 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         _binding = null
     }
 
-    private fun setupSwipeRefresh() {
-        binding.swipeRefreshLayout.setOnRefreshListener(viewModel::refreshUi)
-        viewModel.uiState
-            .map { it.isRefreshing }
-            .distinctUntilChanged()
-            .observe(viewLifecycleOwner) {
-                binding.swipeRefreshLayout.isRefreshing = it
+    private fun observeUiState() {
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            binding.apply {
+                posterLoadingProgressBar.isVisible = uiState.isLoading
+                swipeRefreshLayout.isRefreshing = uiState.isRefreshing
             }
+        }
     }
 
     private fun setupPosterAdapter() {
         val columns = resources.getInteger(R.integer.recycler_columns)
         val adapter = PosterAdapter(this)
-        binding.seeAllRecyclerView.layoutManager = GridLayoutManager(context, columns)
-        binding.seeAllRecyclerView.adapter = adapter
+        binding.posterRecyclerView.layoutManager = GridLayoutManager(context, columns)
+        binding.posterRecyclerView.adapter = adapter
         observePosterFlow(adapter)
         observeRefreshUi(adapter)
     }
 
     private fun observePosterFlow(adapter: PosterAdapter) {
         lifecycleScope.launchWhenStarted {
-            viewModel.requestPosterData(args.compilation).collectLatest {
+            viewModel.requestPosterData(filter).collectLatest {
                 viewModel.posterDataReceived()
                 adapter.submitData(it)
             }
@@ -87,7 +99,10 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         }
 
     override fun onClickPoster(poster: Poster) {
-        val action = PosterFragmentDirections.actionPosterFragmentToDetailsFragment(poster.contentId, poster.contentType)
+        val action = PosterFragmentDirections.actionPosterFragmentToDetailsFragment(
+            poster.contentId,
+            poster.contentType
+        )
         findNavController().navigate(action)
     }
 }

@@ -1,14 +1,16 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import coil.load
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentDetailsBinding
@@ -39,7 +41,9 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         requestDetails()
         observeDetails()
+        setupToolbar()
         setupTabLayout()
+        setupFavorites()
     }
 
     override fun onStop() {
@@ -51,6 +55,19 @@ class DetailsFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun setupToolbar() {
+        val navController = binding.root.findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        binding.collapsingLayout.setupWithNavController(
+            binding.toolbar,
+            navController,
+            appBarConfiguration
+        )
+    }
+
+    private fun setupFavorites() =
+        binding.favoritesImageView.setOnClickListener { viewModel.changeFavorites() }
 
     private fun setupTabLayout() {
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -83,12 +100,16 @@ class DetailsFragment : Fragment() {
                 loadingProgressBar.isVisible = uiState.isLoading
                 tabLayout.selectTab(tabLayout.getTabAt(uiState.tabPosition))
                 uiState.details?.let { details ->
-                    toolbar.title = details.title
-                    toolbar.subtitle = details.tagline
+                    collapsingLayout.title = details.title
                     titleTextView.text = details.title
                     taglineTextView.text = details.tagline
                     overviewTextView.text = details.overview
                     userReviewEditText.setText(details.userReview)
+                    val colorId = when (details.favorites) {
+                        true -> R.color.in_favorites_color
+                        false -> R.color.no_favorites_color
+                    }
+                    context?.let { favoritesImageView.setColorFilter(it.getColor(colorId)) }
                     posterLayout.posterImageView.load(details.posterImage.imageUrl()) {
                         crossfade(true)
                         placeholder(R.drawable.ic_poster_placeholder)

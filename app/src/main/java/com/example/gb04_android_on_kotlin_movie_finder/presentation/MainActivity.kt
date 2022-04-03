@@ -1,6 +1,7 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -24,14 +25,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNavController()
-        setupToolbar()
         setupBottomNavigation()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return item.onNavDestinationSelected(navController)
-                || super.onOptionsItemSelected(item)
-
     }
 
     private fun setupNavController() {
@@ -41,20 +35,13 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isMainFragment = when (destination.id) {
                 R.id.movies_fragment,
-                R.id.tvshows_fragment -> true
+                R.id.tvshows_fragment,
+                R.id.favorites_fragment,
+                R.id.settings_fragment -> true
                 else -> false
             }
-            binding.toolbar.isVisible = isMainFragment
             binding.bottomNav.isVisible = isMainFragment
         }
-    }
-
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-//        supportActionBar?.let {
-//            it.setDisplayShowHomeEnabled(true)
-//            it.setDisplayHomeAsUpEnabled(true)
-//        }
     }
 
     private fun setupBottomNavigation() {

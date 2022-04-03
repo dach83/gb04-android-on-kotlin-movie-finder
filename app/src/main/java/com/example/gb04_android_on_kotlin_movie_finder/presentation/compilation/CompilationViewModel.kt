@@ -7,7 +7,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Settings
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.applySettings
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +26,7 @@ class CompilationViewModel @Inject constructor(private val repository: IReposito
     fun requestCompilationData(
         compilation: Compilation,
     ): Flow<PagingData<Poster>> {
+        _uiState.update { it.copy(isLoading = true) }
         if (compilationFlow[compilation] == null) {
             compilationFlow[compilation] =
                 repository.requestCompilation(compilation).cachedIn(viewModelScope)
@@ -36,7 +36,7 @@ class CompilationViewModel @Inject constructor(private val repository: IReposito
     }
 
     fun compilationDataReceived() = _uiState.update { currentState ->
-        currentState.copy(isInitialLoading = false, isRefreshing = false)
+        currentState.copy(isLoading = false, isRefreshing = false)
     }
 
     fun refreshUi() = _uiState.update { currentState ->

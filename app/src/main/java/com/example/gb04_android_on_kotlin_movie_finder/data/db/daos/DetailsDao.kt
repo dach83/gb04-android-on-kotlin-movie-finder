@@ -1,5 +1,6 @@
 package com.example.gb04_android_on_kotlin_movie_finder.data.db.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -16,4 +17,6 @@ interface DetailsDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertDetails(details: DbDetails)
 
+    @Query("SELECT * FROM details WHERE favourites = :favorites")
+    fun favoritesPagingSource(favorites: Boolean = true): PagingSource<Int, DbDetails>
 }

@@ -12,5 +12,6 @@ interface IRepository {
     suspend fun storeDetails(details: Details)
     suspend fun requestDetails(id: Int, contentType: ContentType): Details
     fun requestCompilation(compilation: Compilation): Flow<PagingData<Poster>>
+    fun requestFavorites(): Flow<PagingData<Poster>>
     fun loadSettings(): Settings
 }

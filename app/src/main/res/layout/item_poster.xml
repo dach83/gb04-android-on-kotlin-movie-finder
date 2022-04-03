@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/default_margin"
-    android:elevation="10dp"
+    android:elevation="@dimen/default_elevation"
     app:cardCornerRadius="10dp">
 
     <androidx.appcompat.widget.AppCompatImageView

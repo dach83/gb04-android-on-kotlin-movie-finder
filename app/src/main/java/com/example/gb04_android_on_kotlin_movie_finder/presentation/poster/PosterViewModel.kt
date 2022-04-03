@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
-import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Settings
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.applySettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -24,16 +23,20 @@ class PosterViewModel @Inject constructor(private val repository: IRepository) :
     private val _uiState = MutableStateFlow(PosterViewState())
     val uiState = _uiState.asLiveData()
 
-    fun requestPosterData(compilation: Compilation): Flow<PagingData<Poster>> {
+    fun requestPosterData(filter: PosterFilter): Flow<PagingData<Poster>> {
+        _uiState.update { it.copy(isLoading = true) }
         if (posterFlow == null) {
-            posterFlow = repository.requestCompilation(compilation).cachedIn(viewModelScope)
+            posterFlow = when (filter) {
+                is PosterFilter.CompilationFilter -> repository.requestCompilation(filter.compilation)
+                is PosterFilter.FavoritesFilter -> repository.requestFavorites()
+            }.cachedIn(viewModelScope)
         }
         return (posterFlow as Flow<PagingData<Poster>>)
             .applySettings(repository.loadSettings())
     }
 
     fun posterDataReceived() = _uiState.update { currentState ->
-        currentState.copy(isRefreshing = false)
+        currentState.copy(isLoading = false, isRefreshing = false)
     }
 
     fun refreshUi() = _uiState.update { currentState ->
