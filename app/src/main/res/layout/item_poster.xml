@@ -4,13 +4,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/default_margin"
-    android:elevation="10dp"
+    android:elevation="@dimen/default_elevation"
     app:cardCornerRadius="10dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/poster_image_view"
-        android:layout_width="@dimen/poster_width"
-        android:layout_height="@dimen/poster_height"
-        android:src="@drawable/ic_movie" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:maxHeight="@dimen/poster_height"
+        android:maxWidth="@dimen/poster_width"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_poster_placeholder" />
 
 </androidx.cardview.widget.CardView>

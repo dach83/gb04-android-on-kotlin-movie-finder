@@ -5,18 +5,17 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/movies_fragment">
 
-
     <fragment
         android:id="@+id/movies_fragment"
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment"
-        android:label="CompilationFragment">
+        android:label="Movies">
+        <argument
+            android:name="content_type"
+            android:defaultValue="MOVIE"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType" />
         <action
             android:id="@+id/action_compilationFragment_to_posterFragment"
             app:destination="@id/poster_fragment" />
-        <argument
-            android:name="content_type"
-            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType"
-            android:defaultValue="MOVIE" />
         <action
             android:id="@+id/action_movies_fragment_to_detailsFragment"
             app:destination="@id/details_fragment" />
@@ -24,34 +23,45 @@
     <fragment
         android:id="@+id/tvshows_fragment"
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation.CompilationFragment"
-        android:label="CompilationFragment">
-        <action
-            android:id="@+id/action_movies_fragment_to_detailsFragment"
-            app:destination="@id/details_fragment" />
-        <action
-            android:id="@+id/action_compilationFragment_to_posterFragment"
-            app:destination="@id/poster_fragment" />
+        android:label="Movies">
         <argument
             android:name="content_type"
             android:defaultValue="TVSHOW"
             app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType" />
+        <action
+            android:id="@+id/action_compilationFragment_to_posterFragment"
+            app:destination="@id/poster_fragment" />
+        <action
+            android:id="@+id/action_movies_fragment_to_detailsFragment"
+            app:destination="@id/details_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favorites_fragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterFragment"
+        android:label="PosterFragment">
+        <action
+            android:id="@+id/action_poster_fragment_to_details_fragment"
+            app:destination="@id/details_fragment" />
+        <argument
+            android:name="filter"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter" />
     </fragment>
     <fragment
         android:id="@+id/poster_fragment"
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterFragment"
-        android:label="PosterFragment" >
-        <argument
-            android:name="compilation"
-            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation" />
+        android:label="PosterFragment">
         <action
             android:id="@+id/action_poster_fragment_to_details_fragment"
             app:destination="@id/details_fragment" />
+        <argument
+            android:name="filter"
+            app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter" />
     </fragment>
     <fragment
         android:id="@+id/details_fragment"
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.details.DetailsFragment"
         android:label="fragment_details"
-        tools:layout="@layout/fragment_details" >
+        tools:layout="@layout/fragment_details">
         <argument
             android:name="content_id"
             app:argType="integer" />
@@ -59,4 +69,9 @@
             android:name="content_type"
             app:argType="com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType" />
     </fragment>
+    <fragment
+        android:id="@+id/settings_fragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.setting.SettingsFragment"
+        android:label="SettingsFragment" />
+
 </navigation>

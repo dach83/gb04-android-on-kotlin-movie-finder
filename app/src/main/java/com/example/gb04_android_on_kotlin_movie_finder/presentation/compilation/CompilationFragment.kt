@@ -1,11 +1,7 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,25 +11,36 @@ import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.movieCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.tvShowCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAdapter.Controller {
 
     private val args by navArgs<CompilationFragmentArgs>()
-
     private var _binding: FragmentCompilationBinding? = null
     private val binding: FragmentCompilationBinding get() = _binding!!
-
     private val viewModel: CompilationViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +54,7 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         super.onViewCreated(view, savedInstanceState)
         setupSwipeRefresh()
         setupCompilationAdapter()
-        observeInitialLoad()
+        observeUiState()
     }
 
     override fun onDestroyView() {
@@ -74,10 +81,19 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         binding.compilationRecyclerView.adapter = adapter
     }
 
+    private fun observeUiState() =
+        viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
+            binding.apply {
+                initialLoadProgressBar.isVisible = uiState.isLoading
+                swipeRefreshLayout.isRefreshing = uiState.isRefreshing
+            }
+        }
+
     override fun setupPosterAdapter(
         compilation: Compilation,
         recyclerView: RecyclerView
     ) {
+        // TODO(Не сохраняется позиция в горизонтальных списках при повороте экрана и при смене фрагмента')
         val adapter = PosterAdapter(this)
         recyclerView.adapter = adapter
         observePosterFlow(compilation, adapter)
@@ -90,7 +106,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     ) {
         lifecycleScope.launchWhenStarted {
             viewModel.requestCompilationData(compilation).collectLatest {
-                Log.d("@@@", "compilationFlowReceived")
                 viewModel.compilationDataReceived()
                 adapter.submitData(it)
             }
@@ -106,25 +121,19 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
             }
         }
 
-    private fun observeInitialLoad() {
-        viewModel.uiState
-            .map { it.isInitialLoading }
-            .distinctUntilChanged()
-            .observe(viewLifecycleOwner) { isInitialLoading ->
-                // TODO ("При выклеченном интернете ProgressBar не появляется, т.к. отрабатывает observePosterFlow")
-                Log.d("@@@", "isInitialLoading: $isInitialLoading")
-                binding.initialLoadProgressBar.isVisible = isInitialLoading
-            }
-    }
-
     override fun onClickSeeAll(compilation: Compilation) {
         val action =
-            CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(compilation)
+            CompilationFragmentDirections.actionCompilationFragmentToPosterFragment(
+                PosterFilter.CompilationFilter(compilation)
+            )
         findNavController().navigate(action)
     }
 
     override fun onClickPoster(poster: Poster) {
-        val action = CompilationFragmentDirections.actionMoviesFragmentToDetailsFragment(poster.id, poster.contentType)
+        val action = CompilationFragmentDirections.actionMoviesFragmentToDetailsFragment(
+            poster.contentId,
+            poster.contentType
+        )
         findNavController().navigate(action)
     }
 

@@ -9,14 +9,16 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="@dimen/details_appbar_height"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsing_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleTextColor="#00FFFFFF"
+            app:expandedTitleGravity="top"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleCollapseMode="scale">
 
@@ -52,9 +54,9 @@
                     android:layout_marginStart="@dimen/text_margin"
                     android:textColor="@color/black"
                     android:textSize="30sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/poster_layout"
                     app:layout_constraintTop_toTopOf="@id/poster_layout"
-                    app:layout_constraintEnd_toEndOf="parent"
                     tools:text="The Contractor" />
 
                 <TextView
@@ -62,16 +64,28 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="@id/title_text_view"
                     app:layout_constraintStart_toStartOf="@id/title_text_view"
                     app:layout_constraintTop_toBottomOf="@id/title_text_view"
-                    app:layout_constraintEnd_toEndOf="@id/title_text_view"
                     tools:text="The mission is not what it seems." />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/favorites_image_view"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:elevation="@dimen/default_elevation"
+                    android:src="@drawable/ic_favorites"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:tint="@color/no_favorites_color"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
                 tools:title="The Contractor" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -81,13 +95,57 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/overview_text_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:textSize="20sp"
-            tools:text="@string/large_text" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/default_elevation"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/info" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_review" />
+            </com.google.android.material.tabs.TabLayout>
+
+            <TextView
+                android:id="@+id/overview_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
+                android:textSize="@dimen/text_size"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+                tools:text="@string/large_text" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/user_review_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:background="@null"
+                android:hint="@string/user_review_hint"
+                android:inputType="textMultiLine"
+                android:textSize="@dimen/text_size"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 

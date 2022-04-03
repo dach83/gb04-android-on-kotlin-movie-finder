@@ -14,14 +14,33 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(private val repository: IRepository) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<DetailsViewState>(DetailsViewState())
+    private val _uiState = MutableStateFlow(DetailsViewState())
     val uiState = _uiState.asLiveData()
 
     fun requestDetails(id: Int, contentType: ContentType) = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
         val details = repository.requestDetails(id, contentType)
-        _uiState.update { currentState ->
-           currentState.copy(isLoading = false, details = details)
+        _uiState.update { it.copy(isLoading = false, details = details) }
+    }
+
+    fun storeUserReview(userReview: String) = viewModelScope.launch {
+        if (userReview.isEmpty()) return@launch
+        uiState.value?.details?.let { oldDetails ->
+            val details = oldDetails.copy(userReview = userReview)
+            repository.storeDetails(details)
+            _uiState.update { state -> state.copy(details = details) }
         }
     }
+
+    fun changeFavorites() = viewModelScope.launch {
+        uiState.value?.details?.let { oldDetails ->
+            val details = oldDetails.copy(favorites = !oldDetails.favorites)
+            repository.storeDetails(details)
+            _uiState.update { state -> state.copy(details = details) }
+        }
+    }
+
+    fun changeTabPosition(tabPosition: Int) =
+        _uiState.update { it.copy(tabPosition = tabPosition) }
 
 }

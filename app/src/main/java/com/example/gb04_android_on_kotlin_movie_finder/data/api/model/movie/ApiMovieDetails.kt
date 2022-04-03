@@ -9,8 +9,8 @@ data class ApiMovieDetails(
     @SerializedName("overview") val overview: String?,
     @SerializedName("poster_path") val posterPath: String?,
     @SerializedName("backdrop_path") val backdropPath: String?,
+    @SerializedName("adult") val adult: Boolean,
 
-//    @SerializedName("adult") val adult: Boolean,
 //    @SerializedName("belongs_to_collection") val belongsToCollection: String?,
 //    @SerializedName("budget") val budget: Int,
 //    @SerializedName("genres") val genres: List<ApiMovieGenres>,

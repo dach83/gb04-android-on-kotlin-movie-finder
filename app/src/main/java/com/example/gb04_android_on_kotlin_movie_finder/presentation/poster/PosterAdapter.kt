@@ -31,16 +31,24 @@ class PosterAdapter(private val controller: Controller) :
     inner class ViewHolder(private val binding: ItemPosterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(poster: Poster) = binding.apply {
-            posterImageView.load(poster.posterUrl) {
-                crossfade(true)
-                placeholder(R.drawable.ic_movie)
+        private fun loadPosterImage(posterUrl: String = "") {
+            if (posterUrl.isEmpty()) {
+                binding.posterImageView.setImageResource(R.drawable.ic_poster_placeholder)
+            } else {
+                binding.posterImageView.load(posterUrl) {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_poster_placeholder)
+                }
             }
+        }
+
+        fun bind(poster: Poster) = binding.apply {
+            loadPosterImage(poster.posterImage.imageUrl())
             root.setOnClickListener { controller.onClickPoster(poster) }
         }
 
         fun placeholder() = binding.apply {
-            posterImageView.setImageResource(R.drawable.ic_movie)
+            loadPosterImage()
             root.setOnClickListener(null)
         }
     }
@@ -50,10 +58,10 @@ class PosterAdapter(private val controller: Controller) :
     }
 }
 
-private object POSTER_COMPARATOR : DiffUtil.ItemCallback<Poster>() {
+private val POSTER_COMPARATOR = object : DiffUtil.ItemCallback<Poster>() {
 
     override fun areItemsTheSame(oldItem: Poster, newItem: Poster): Boolean {
-        return oldItem.posterUrl == newItem.posterUrl
+        return (oldItem.contentId == newItem.contentId) && (oldItem.contentType == newItem.contentType)
     }
 
     override fun areContentsTheSame(oldItem: Poster, newItem: Poster): Boolean {

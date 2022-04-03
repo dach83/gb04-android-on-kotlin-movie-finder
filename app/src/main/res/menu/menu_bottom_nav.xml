@@ -4,23 +4,29 @@
 
     <item
         android:id="@+id/movies_fragment"
-        android:icon="@drawable/ic_movie"
         android:enabled="true"
+        android:icon="@drawable/ic_movie"
         android:title="@string/movies_label"
         app:showAsAction="ifRoom" />
 
-<!--    <item-->
-<!--        android:id="@+id/celebs_fragment"-->
-<!--        android:icon="@drawable/ic_celeb"-->
-<!--        android:enabled="true"-->
-<!--        android:title="@string/celebs_menu_label"-->
-<!--        app:showAsAction="ifRoom" />-->
-
     <item
         android:id="@+id/tvshows_fragment"
-        android:icon="@drawable/ic_tvshow"
         android:enabled="true"
+        android:icon="@drawable/ic_tvshow"
         android:title="@string/tvshows_label"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/favorites_fragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_favorites"
+        android:title="@string/favorites_label"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/settings_fragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings_label"
+        app:showAsAction="ifRoom" />
 </menu>

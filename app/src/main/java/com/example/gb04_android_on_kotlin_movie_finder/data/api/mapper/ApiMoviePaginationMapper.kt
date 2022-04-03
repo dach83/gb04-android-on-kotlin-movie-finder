@@ -5,10 +5,8 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Pagin
 import javax.inject.Inject
 
 class ApiMoviePaginationMapper @Inject constructor() : ApiMapper<ApiMovieList, Pagination> {
-    override fun mapToDomain(apiEntity: ApiMovieList): Pagination {
-        return Pagination(
-            apiEntity.page,
-            apiEntity.totalPages
-        )
-    }
+    override fun mapToDomain(apiEntity: ApiMovieList): Pagination = Pagination(
+        apiEntity.page,
+        apiEntity.totalPages
+    )
 }

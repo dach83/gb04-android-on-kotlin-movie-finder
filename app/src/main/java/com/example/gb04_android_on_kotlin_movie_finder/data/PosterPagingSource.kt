@@ -11,12 +11,11 @@ class PosterPagingSource(
     private val paginatedPosterLoader: PaginatedPosterLoader
 ) : PagingSource<Int, Poster>() {
 
-    override fun getRefreshKey(state: PagingState<Int, Poster>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
+    override fun getRefreshKey(state: PagingState<Int, Poster>): Int? =
+        state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
-    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Poster> {
         return try {

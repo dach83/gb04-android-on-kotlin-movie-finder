@@ -2,6 +2,8 @@ package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.ItemCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
@@ -9,8 +11,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 class CompilationAdapter(
     private val compilations: List<Compilation>,
     private val controller: Controller
-) :
-    RecyclerView.Adapter<CompilationAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<CompilationAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -22,12 +23,15 @@ class CompilationAdapter(
         holder.bind(compilations[position])
     }
 
-    override fun getItemCount(): Int {
-        return compilations.size
-    }
+    override fun getItemCount(): Int = compilations.size
 
     inner class ViewHolder(private val binding: ItemCompilationBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.posterRecyclerView.layoutManager =
+                LinearLayoutManager(itemView.context, HORIZONTAL, false)
+        }
 
         fun bind(compilation: Compilation) {
             binding.apply {
