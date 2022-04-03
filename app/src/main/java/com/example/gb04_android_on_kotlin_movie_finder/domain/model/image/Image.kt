@@ -1,10 +1,10 @@
 package com.example.gb04_android_on_kotlin_movie_finder.domain.model.image
 
 data class Image(
-    val imagePath: String,
+    val imagePath: String = "",
 ) {
 
-    fun url(imageSize: ImageSize = ImageSize.MEDIUM): String =
+    fun imageUrl(imageSize: ImageSize = ImageSize.MEDIUM): String =
         if (imagePath.isEmpty()) {
             ""
         } else {

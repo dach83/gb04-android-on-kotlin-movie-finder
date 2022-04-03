@@ -43,7 +43,7 @@ class PosterAdapter(private val controller: Controller) :
         }
 
         fun bind(poster: Poster) = binding.apply {
-            loadPosterImage(poster.posterImage.url())
+            loadPosterImage(poster.posterImage.imageUrl())
             root.setOnClickListener { controller.onClickPoster(poster) }
         }
 

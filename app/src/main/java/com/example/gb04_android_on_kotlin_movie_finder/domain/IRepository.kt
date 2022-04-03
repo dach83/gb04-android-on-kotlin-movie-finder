@@ -9,6 +9,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poste
 import kotlinx.coroutines.flow.Flow
 
 interface IRepository {
+    suspend fun storeDetails(details: Details)
     suspend fun requestDetails(id: Int, contentType: ContentType): Details
     fun requestCompilation(compilation: Compilation): Flow<PagingData<Poster>>
     fun loadSettings(): Settings

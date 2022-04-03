@@ -1,7 +1,6 @@
 package com.example.gb04_android_on_kotlin_movie_finder.data
 
 import android.app.Application
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -9,31 +8,61 @@ import androidx.preference.PreferenceManager
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiConstants
 import com.example.gb04_android_on_kotlin_movie_finder.data.api.ApiService
-import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.*
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiMoviePaginationMapper
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiMoviePosterMapper
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiTvShowPaginationMapper
+import com.example.gb04_android_on_kotlin_movie_finder.data.api.mapper.ApiTvShowPosterMapper
+import com.example.gb04_android_on_kotlin_movie_finder.data.db.daos.DetailsDao
+import com.example.gb04_android_on_kotlin_movie_finder.data.db.model.DbDetails
+import com.example.gb04_android_on_kotlin_movie_finder.data.mapper.MovieDetailsMapper
+import com.example.gb04_android_on_kotlin_movie_finder.data.mapper.TvShowDetailsMapper
 import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Settings
+import com.example.gb04_android_on_kotlin_movie_finder.domain.model.details.Details
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PaginatedPoster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val app: Application,
     private val apiService: ApiService,
-    private val apiMovieDetailsMapper: ApiMovieDetailsMapper,
-    private val apiTvShowDetailsMapper: ApiTvShowDetailsMapper,
+    private val detailsDao: DetailsDao,
+    private val movieDetailsMapper: MovieDetailsMapper,
+    private val tvShowDetailsMapper: TvShowDetailsMapper,
     private val apiMoviePosterMapper: ApiMoviePosterMapper,
     private val apiMoviePaginationMapper: ApiMoviePaginationMapper,
     private val apiTvShowPosterMapper: ApiTvShowPosterMapper,
     private val apiTvShowPaginationMapper: ApiTvShowPaginationMapper
 ) : IRepository {
 
-    override suspend fun requestDetails(id: Int, contentType: ContentType) = when (contentType) {
-        ContentType.MOVIE -> apiMovieDetailsMapper.mapToDomain(apiService.getMovieDetails(id))
-        ContentType.TVSHOW -> apiTvShowDetailsMapper.mapToDomain(apiService.getTvShowDetails(id))
+    override suspend fun storeDetails(details: Details) {
+        detailsDao.insertDetails(DbDetails.fromDomain(details))
     }
+
+    override suspend fun requestDetails(id: Int, contentType: ContentType): Details =
+        when (contentType) {
+            ContentType.MOVIE -> requestMovieDetails(id, contentType)
+            ContentType.TVSHOW -> requestTvShowDetails(id, contentType)
+        }
+
+    private suspend fun requestMovieDetails(id: Int, contentType: ContentType): Details =
+        coroutineScope {
+            val apiDetails = async { apiService.getMovieDetails(id) }
+            val dbDetails = async { detailsDao.getDetails(id, contentType) }
+            movieDetailsMapper.mapToDomain(apiDetails.await(), dbDetails.await())
+        }
+
+    private suspend fun requestTvShowDetails(id: Int, contentType: ContentType): Details =
+        coroutineScope {
+            val apiDetails = async { apiService.getTvShowDetails(id) }
+            val dbDetails = async { detailsDao.getDetails(id, contentType) }
+            tvShowDetailsMapper.mapToDomain(apiDetails.await(), dbDetails.await())
+        }
 
     override fun requestCompilation(compilation: Compilation): Flow<PagingData<Poster>> {
         val loader = when (compilation.contentType) {

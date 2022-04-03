@@ -1,6 +1,7 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,11 @@ class DetailsFragment : Fragment() {
         setupTabLayout()
     }
 
+    override fun onStop() {
+        super.onStop()
+        storeUserReview()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -52,6 +58,8 @@ class DetailsFragment : Fragment() {
                 0 -> binding.overviewTextView.isVisible = true
                 1 -> binding.userReviewEditText.isVisible = true
                 else -> throw IllegalArgumentException("Unknown Tab")
+            }.also {
+                viewModel.changeTabPosition(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) = when (tab.position) {
@@ -73,22 +81,28 @@ class DetailsFragment : Fragment() {
         viewModel.uiState.observe(viewLifecycleOwner) { uiState ->
             binding.apply {
                 loadingProgressBar.isVisible = uiState.isLoading
+                tabLayout.selectTab(tabLayout.getTabAt(uiState.tabPosition))
                 uiState.details?.let { details ->
                     toolbar.title = details.title
                     toolbar.subtitle = details.tagline
                     titleTextView.text = details.title
                     taglineTextView.text = details.tagline
                     overviewTextView.text = details.overview
-                    posterLayout.posterImageView.load(details.posterImage.url()) {
+                    userReviewEditText.setText(details.userReview)
+                    posterLayout.posterImageView.load(details.posterImage.imageUrl()) {
                         crossfade(true)
                         placeholder(R.drawable.ic_poster_placeholder)
                     }
-                    backdropImageView.load(details.backdropImage.url(ImageSize.LARGE)) {
+                    backdropImageView.load(details.backdropImage.imageUrl(ImageSize.LARGE)) {
                         crossfade(true)
                     }
                 }
             }
         }
+    }
+
+    private fun storeUserReview() {
+        viewModel.storeUserReview(binding.userReviewEditText.text.toString())
     }
 
 }
