@@ -43,7 +43,12 @@ class Repository @Inject constructor(
 ) : IRepository {
 
     override suspend fun storeDetails(details: Details) {
-        detailsDao.insertDetails(DbDetails.fromDomain(details))
+        val dbDetails = DbDetails.fromDomain(details)
+        if (dbDetails.isEmpty()) {
+            detailsDao.deleteDetails(dbDetails)
+        } else {
+            detailsDao.insertDetails(dbDetails)
+        }
     }
 
     override suspend fun requestDetails(id: Int, contentType: ContentType): Details =

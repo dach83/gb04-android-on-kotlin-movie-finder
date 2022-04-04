@@ -12,13 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentPosterBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -45,9 +45,19 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupFilter()
+        setupSwipeRefresh()
         setupPosterAdapter()
         observeUiState()
     }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setupSwipeRefresh() =
+        binding.swipeRefreshLayout.setOnRefreshListener (viewModel::refreshUi)
 
     private fun setupFilter() {
         filter = try {
@@ -55,11 +65,6 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         } catch (e: Exception) {
             PosterFilter.FavoritesFilter // default filter
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun observeUiState() {
@@ -78,12 +83,20 @@ class PosterFragment : Fragment(), PosterAdapter.Controller {
         binding.posterRecyclerView.adapter = adapter
         observePosterFlow(adapter)
         observeRefreshUi(adapter)
+        observeLoadingState(adapter)
     }
+
+    private fun observeLoadingState(adapter: PosterAdapter) =
+        adapter.addLoadStateListener {
+            when (it.refresh) {
+                !is LoadState.Loading -> viewModel.posterDataReceived()
+                else -> Unit
+            }
+        }
 
     private fun observePosterFlow(adapter: PosterAdapter) {
         lifecycleScope.launchWhenStarted {
             viewModel.requestPosterData(filter).collectLatest {
-                viewModel.posterDataReceived()
                 adapter.submitData(it)
             }
         }

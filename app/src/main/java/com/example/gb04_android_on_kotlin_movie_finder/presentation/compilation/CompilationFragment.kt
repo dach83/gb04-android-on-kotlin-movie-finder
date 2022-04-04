@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
@@ -62,15 +63,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         _binding = null
     }
 
-    private fun setupSwipeRefresh() {
+    private fun setupSwipeRefresh() =
         binding.swipeRefreshLayout.setOnRefreshListener(viewModel::refreshUi)
-        viewModel.uiState
-            .map { it.isRefreshing }
-            .distinctUntilChanged()
-            .observe(viewLifecycleOwner) {
-                binding.swipeRefreshLayout.isRefreshing = it
-            }
-    }
 
     private fun setupCompilationAdapter() {
         val compilations = when (args.contentType) {
@@ -98,7 +92,16 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         recyclerView.adapter = adapter
         observePosterFlow(compilation, adapter)
         observeRefreshUi(adapter)
+        observeLoadingState(adapter)
     }
+
+    private fun observeLoadingState(adapter: PosterAdapter) =
+        adapter.addLoadStateListener {
+            when (it.refresh) {
+                !is LoadState.Loading -> viewModel.compilationDataReceived()
+                else -> Unit
+            }
+        }
 
     private fun observePosterFlow(
         compilation: Compilation,
@@ -106,7 +109,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     ) {
         lifecycleScope.launchWhenStarted {
             viewModel.requestCompilationData(compilation).collectLatest {
-                viewModel.compilationDataReceived()
                 adapter.submitData(it)
             }
         }

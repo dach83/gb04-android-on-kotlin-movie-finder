@@ -85,8 +85,7 @@ class DetailsFragment : Fragment() {
                 else -> throw IllegalArgumentException("Unknown Tab")
             }
 
-            override fun onTabReselected(tab: TabLayout.Tab) {
-            }
+            override fun onTabReselected(tab: TabLayout.Tab) = Unit
         })
     }
 

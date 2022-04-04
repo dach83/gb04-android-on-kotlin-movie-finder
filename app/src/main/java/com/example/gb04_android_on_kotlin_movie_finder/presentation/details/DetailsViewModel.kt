@@ -24,11 +24,12 @@ class DetailsViewModel @Inject constructor(private val repository: IRepository) 
     }
 
     fun storeUserReview(userReview: String) = viewModelScope.launch {
-        if (userReview.isEmpty()) return@launch
         uiState.value?.details?.let { oldDetails ->
-            val details = oldDetails.copy(userReview = userReview)
-            repository.storeDetails(details)
-            _uiState.update { state -> state.copy(details = details) }
+            if (userReview != oldDetails.userReview) {
+                val details = oldDetails.copy(userReview = userReview)
+                repository.storeDetails(details)
+                _uiState.update { state -> state.copy(details = details) }
+            }
         }
     }
 
