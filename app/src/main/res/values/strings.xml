@@ -119,4 +119,6 @@
     <string name="user_review">USER REVIEW</string>
     <string name="favorites_label">FAVORITES</string>
     <string name="settings_label">SETTINGS</string>
+    <string name="retry">Retry</string>
+    <string name="contacts_label">CONTACTS</string>
 </resources>

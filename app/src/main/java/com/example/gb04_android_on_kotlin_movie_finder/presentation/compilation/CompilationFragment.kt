@@ -1,7 +1,9 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
@@ -21,8 +22,8 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poste
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.tvShowCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterAdapter
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -32,16 +33,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     private var _binding: FragmentCompilationBinding? = null
     private val binding: FragmentCompilationBinding get() = _binding!!
     private val viewModel: CompilationViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +71,10 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
             binding.apply {
                 initialLoadProgressBar.isVisible = uiState.isLoading
                 swipeRefreshLayout.isRefreshing = uiState.isRefreshing
+                uiState.failure?.getContentIfNotHandled()?.let {
+                    Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG)
+                        .show()
+                }
             }
         }
 
@@ -97,10 +92,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
 
     private fun observeLoadingState(adapter: PosterAdapter) =
         adapter.addLoadStateListener {
-            when (it.refresh) {
-                !is LoadState.Loading -> viewModel.compilationDataReceived()
-                else -> Unit
-            }
+            if (it.refresh is LoadState.Error) viewModel.onFailure((it.refresh as LoadState.Error).error)
+            if (it.refresh !is LoadState.Loading) viewModel.compilationDataReceived()
         }
 
     private fun observePosterFlow(

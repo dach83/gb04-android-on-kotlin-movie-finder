@@ -24,6 +24,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Settings
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.details.Details
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PaginatedPoster
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -59,8 +60,8 @@ class Repository @Inject constructor(
 
     private suspend fun requestMovieDetails(id: Int, contentType: ContentType): Details =
         coroutineScope {
-            val apiDetails = async { apiService.getMovieDetails(id) }
-            val dbDetails = async { detailsDao.getDetails(id, contentType) }
+            val apiDetails = async(Dispatchers.IO) { apiService.getMovieDetails(id) }
+            val dbDetails = async(Dispatchers.IO) { detailsDao.getDetails(id, contentType) }
             movieDetailsMapper.mapToDomain(apiDetails.await(), dbDetails.await())
         }
 
@@ -77,13 +78,8 @@ class Repository @Inject constructor(
             ContentType.TVSHOW -> paginatedTvShowPosterLoader(compilation)
         }
         return Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = {
-                PosterPagingSource(loader)
-            }
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { PosterPagingSource(loader) }
         ).flow
     }
 

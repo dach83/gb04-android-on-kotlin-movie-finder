@@ -73,5 +73,9 @@
         android:id="@+id/settings_fragment"
         android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.setting.SettingsFragment"
         android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/contact_fragment"
+        android:name="com.example.gb04_android_on_kotlin_movie_finder.presentation.contacts.ContactFragment"
+        android:label="ContactFragment" />
 
 </navigation>

@@ -9,6 +9,7 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.IRepository
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poster
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.applySettings
+import com.example.gb04_android_on_kotlin_movie_finder.presentation.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +42,10 @@ class CompilationViewModel @Inject constructor(private val repository: IReposito
 
     fun refreshUi() = _uiState.update { currentState ->
         currentState.copy(isRefreshing = true)
+    }
+
+    fun onFailure(failure: Throwable) = _uiState.update { currentState ->
+        currentState.copy(failure = Event(failure))
     }
 
 }

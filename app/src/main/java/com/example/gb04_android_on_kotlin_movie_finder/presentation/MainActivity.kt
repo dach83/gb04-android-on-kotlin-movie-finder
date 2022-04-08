@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.movies_fragment,
                 R.id.tvshows_fragment,
                 R.id.favorites_fragment,
-                R.id.settings_fragment -> true
+                R.id.settings_fragment,
+                R.id.contact_fragment-> true
                 else -> false
             }
             binding.bottomNav.isVisible = isMainFragment
