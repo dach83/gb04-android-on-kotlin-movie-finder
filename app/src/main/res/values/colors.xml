@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="in_favorites_color">#FFC107</color>
     <color name="no_favorites_color">#646464</color>
+    <color name="expanded_title_text_color">#00FFFFFF</color>
 </resources>

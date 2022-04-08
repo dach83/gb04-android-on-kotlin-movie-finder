@@ -112,9 +112,13 @@
 
     <!-- Sync Preferences -->
     <string name="adult_enabled">Enable adult content</string>
-    <string name="settings_label">Settings</string>
+    <string name="user_review_hint">Leave a review…</string>
+
+    <!-- Bottom navigation -->
     <string name="info">INFO</string>
     <string name="user_review">USER REVIEW</string>
-    <string name="user_review_hint">Leave a review…</string>
     <string name="favorites_label">FAVORITES</string>
+    <string name="settings_label">SETTINGS</string>
+    <string name="retry">Retry</string>
+    <string name="contacts_label">CONTACTS</string>
 </resources>

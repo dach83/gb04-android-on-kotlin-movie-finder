@@ -29,4 +29,11 @@
         android:icon="@drawable/ic_settings"
         android:title="@string/settings_label"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/contact_fragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_phone"
+        android:title="@string/contacts_label"
+        app:showAsAction="ifRoom" />
 </menu>

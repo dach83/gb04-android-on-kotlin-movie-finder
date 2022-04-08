@@ -1,7 +1,9 @@
 package com.example.gb04_android_on_kotlin_movie_finder.presentation.compilation
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -10,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gb04_android_on_kotlin_movie_finder.R
 import com.example.gb04_android_on_kotlin_movie_finder.databinding.FragmentCompilationBinding
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.Compilation
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.ContentType
@@ -20,8 +22,8 @@ import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.Poste
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.poster.PosterFilter
 import com.example.gb04_android_on_kotlin_movie_finder.domain.model.tvShowCompilations
 import com.example.gb04_android_on_kotlin_movie_finder.presentation.poster.PosterAdapter
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -31,16 +33,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     private var _binding: FragmentCompilationBinding? = null
     private val binding: FragmentCompilationBinding get() = _binding!!
     private val viewModel: CompilationViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,15 +54,8 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         _binding = null
     }
 
-    private fun setupSwipeRefresh() {
+    private fun setupSwipeRefresh() =
         binding.swipeRefreshLayout.setOnRefreshListener(viewModel::refreshUi)
-        viewModel.uiState
-            .map { it.isRefreshing }
-            .distinctUntilChanged()
-            .observe(viewLifecycleOwner) {
-                binding.swipeRefreshLayout.isRefreshing = it
-            }
-    }
 
     private fun setupCompilationAdapter() {
         val compilations = when (args.contentType) {
@@ -86,6 +71,10 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
             binding.apply {
                 initialLoadProgressBar.isVisible = uiState.isLoading
                 swipeRefreshLayout.isRefreshing = uiState.isRefreshing
+                uiState.failure?.getContentIfNotHandled()?.let {
+                    Snackbar.make(binding.root, it.toString(), Snackbar.LENGTH_LONG)
+                        .show()
+                }
             }
         }
 
@@ -98,7 +87,14 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
         recyclerView.adapter = adapter
         observePosterFlow(compilation, adapter)
         observeRefreshUi(adapter)
+        observeLoadingState(adapter)
     }
+
+    private fun observeLoadingState(adapter: PosterAdapter) =
+        adapter.addLoadStateListener {
+            if (it.refresh is LoadState.Error) viewModel.onFailure((it.refresh as LoadState.Error).error)
+            if (it.refresh !is LoadState.Loading) viewModel.compilationDataReceived()
+        }
 
     private fun observePosterFlow(
         compilation: Compilation,
@@ -106,7 +102,6 @@ class CompilationFragment : Fragment(), CompilationAdapter.Controller, PosterAda
     ) {
         lifecycleScope.launchWhenStarted {
             viewModel.requestCompilationData(compilation).collectLatest {
-                viewModel.compilationDataReceived()
                 adapter.submitData(it)
             }
         }
